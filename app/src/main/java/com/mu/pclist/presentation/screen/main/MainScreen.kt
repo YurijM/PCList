@@ -5,15 +5,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mu.pclist.presentation.component.ApplicationBar
+import com.mu.pclist.presentation.component.BottomNav
+import com.mu.pclist.presentation.navigation.NavGraphMain
+import com.mu.pclist.presentation.util.YEAR_START
 
 @Composable
 fun MainScreen() {
@@ -23,12 +23,12 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            /*BottomNav(
+            BottomNav(
                 currentDestination,
                 YEAR_START
             ) { route ->
                 navController.navigate(route)
-            }*/
+            }
         },
         topBar = {
             ApplicationBar()
@@ -44,15 +44,8 @@ fun MainScreen() {
                     bottom = paddingValues.calculateBottomPadding()
                 ),
         ) {
-            //NavGraphMain(navController = navController)
+            NavGraphMain(navController = navController)
 
-            Text(
-                text = "Main Screen",
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 80.dp)
-            )
             /*if (isLoading) {
                     AppProgressBar()
                 }*/

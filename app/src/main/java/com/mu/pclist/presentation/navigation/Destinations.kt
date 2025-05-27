@@ -7,4 +7,11 @@ sealed class Destinations {
     data object SplashDestination : Destinations()
     @Serializable
     data object MainDestination : Destinations()
+
+    @Serializable
+    data object OfficeListDestination : Destinations()
+    @Serializable
+    data object UserListDestination : Destinations()
+    @Serializable
+    data object PCListDestination : Destinations()
 }

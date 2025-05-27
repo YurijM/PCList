@@ -53,10 +53,10 @@ fun SplashScreen(
     val scale = remember {
         Animatable(0f)
     }
-    val scalePC = remember {
+    /*val scalePC = remember {
         Animatable(0f)
-    }
-    val scaleText = remember {
+    }*/
+    val scaleAuthor = remember {
         Animatable(0f)
     }
 
@@ -76,7 +76,7 @@ fun SplashScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        scalePC.animateTo(
+        /*scalePC.animateTo(
             targetValue = 1f,
             animationSpec = tween(
                 durationMillis = 3000,
@@ -84,22 +84,22 @@ fun SplashScreen(
                     OvershootInterpolator(5f).getInterpolation(it)
                 }
             )
-        )
+        )*/
         scale.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 3000,
+                easing = {
+                    OvershootInterpolator(6f).getInterpolation(it)
+                }
+            )
+        )
+        scaleAuthor.animateTo(
             targetValue = 1f,
             animationSpec = tween(
                 durationMillis = 2000,
                 easing = {
                     OvershootInterpolator(10f).getInterpolation(it)
-                }
-            )
-        )
-        scaleText.animateTo(
-            targetValue = .85f,
-            animationSpec = tween(
-                durationMillis = 2000,
-                easing = {
-                    OvershootInterpolator(5f).getInterpolation(it)
                 }
             )
         )
@@ -124,7 +124,7 @@ fun SplashScreen(
                     /*.graphicsLayer {
                         rotationZ = angle.value
                     }*/
-                    .scale(scalePC.value)
+                    .scale(scale.value)
             )
             Text(
                 text = stringResource(R.string.app_name),
@@ -134,20 +134,20 @@ fun SplashScreen(
                 modifier = Modifier.padding(top = 40.dp)
             )
             Column(
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1.5f),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.author),
                     contentDescription = "Logo",
-                    modifier = Modifier.scale(scale.value)
+                    modifier = Modifier.scale(scaleAuthor.value)
                         .rotate(angle.value),
                 )
                 AssistChip(
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .scale(scaleText.value),
+                        .scale(scale.value),
                     onClick = {},
                     label = {
                         Text(text = text)
