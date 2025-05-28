@@ -17,8 +17,8 @@ class UserRepositoryImpl(
         return dao.update(user)
     }
 
-    override suspend fun delete(user: UserEntity) {
-        dao.delete(user)
+    override suspend fun deleteUser(user: UserEntity) {
+        dao.deleteUser(user)
     }
 
     override fun userList(): Flow<List<UserModel>> {

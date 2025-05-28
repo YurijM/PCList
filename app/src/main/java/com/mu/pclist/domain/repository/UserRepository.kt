@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun insert(user: UserEntity): Long
     suspend fun update(user: UserEntity): Int
-    suspend fun delete(user: UserEntity)
+    suspend fun deleteUser(user: UserEntity)
     fun userList(): Flow<List<UserModel>>
 }

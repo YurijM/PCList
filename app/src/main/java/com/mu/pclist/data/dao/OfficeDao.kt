@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.mu.pclist.data.entity.OfficeEntity
 import com.mu.pclist.domain.model.OfficeModel
@@ -20,6 +21,17 @@ interface OfficeDao {
 
     @Delete
     suspend fun delete(office: OfficeEntity)
+
+    @Query("UPDATE table_users " +
+            "SET office_id = NULL " +
+            "WHERE office_id = :officeId")
+    suspend fun setOfficeNull(officeId: Long)
+
+    @Transaction
+    suspend fun deleteOffice(office: OfficeEntity) {
+        setOfficeNull(office.id)
+        delete(office)
+    }
 
     @Query("SELECT o.id, o.code, o.office, o.short_name AS shortName, " +
             "u.id AS userId, u.service_number AS serviceNumber, u.family, u.name, u.patronymic " +

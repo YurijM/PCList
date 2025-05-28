@@ -17,11 +17,11 @@ class OfficeRepositoryImpl(
         return dao.update(office)
     }
 
-    override suspend fun delete(office: OfficeEntity) {
-        delete(office)
+    override suspend fun deleteOffice(office: OfficeEntity) {
+        dao.deleteOffice(office)
     }
 
     override fun officeList(): Flow<List<OfficeModel>> {
-        return dao.officeList()
+        return officeList()
     }
 }

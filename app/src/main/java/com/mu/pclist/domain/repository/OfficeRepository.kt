@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface OfficeRepository {
     suspend fun insert(office: OfficeEntity): Long
     suspend fun update(office: OfficeEntity): Int
-    suspend fun delete(office: OfficeEntity)
+    suspend fun deleteOffice(office: OfficeEntity)
     fun officeList(): Flow<List<OfficeModel>>
 }
