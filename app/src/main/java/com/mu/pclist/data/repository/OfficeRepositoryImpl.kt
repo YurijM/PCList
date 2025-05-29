@@ -24,4 +24,8 @@ class OfficeRepositoryImpl(
     override fun officeList(): Flow<List<OfficeModel>> {
         return dao.officeList()
     }
+
+    override fun office(id: Long): Flow<OfficeEntity> {
+        return dao.office(id)
+    }
 }

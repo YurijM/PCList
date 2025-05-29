@@ -9,4 +9,5 @@ interface OfficeRepository {
     suspend fun update(office: OfficeEntity): Int
     suspend fun deleteOffice(office: OfficeEntity)
     fun officeList(): Flow<List<OfficeModel>>
+    fun office(id: Long): Flow<OfficeEntity>
 }

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.sql.Types.NULL
 
 @Entity(
     tableName = "table_offices",
@@ -40,5 +41,5 @@ data class OfficeEntity(
     val code: String = "",
     val office: String = "",
     @ColumnInfo(name = "short_name") val shortName: String = "",
-    @ColumnInfo(name = "user_id", defaultValue = "NULL") val userId: Long?
+    @ColumnInfo(name = "user_id", defaultValue = "NULL") val userId: Int? = NULL
 )

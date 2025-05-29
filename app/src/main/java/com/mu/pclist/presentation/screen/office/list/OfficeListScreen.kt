@@ -25,10 +25,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.pclist.R
 import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.Title
+import com.mu.pclist.presentation.navigation.Destinations.OfficeDestination
+import com.mu.pclist.presentation.util.NEW_ID
 
 @Composable
 fun OfficeListScreen(
     viewModel: OfficeListViewModel = hiltViewModel(),
+    toOffice: (OfficeDestination) -> Unit
 ) {
     val offices by viewModel.offices.collectAsState(initial = null)
 
@@ -69,7 +72,7 @@ fun OfficeListScreen(
                     items(offices!!) { office ->
                         OfficeListItemScreen(
                             office = office,
-                            onEdit = {},
+                            onEdit = { toOffice(OfficeDestination(office.id)) },
                             onDelete = {},
                         )
                     }
@@ -78,6 +81,6 @@ fun OfficeListScreen(
         }
         FabAdd(
             alignment = Alignment.BottomCenter
-        ) {  }
+        ) { toOffice(OfficeDestination(NEW_ID)) }
     }
 }

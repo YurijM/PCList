@@ -5,6 +5,7 @@ import com.mu.pclist.presentation.navigation.Destinations
 
 const val DEBUG_TAG = "pclist"
 const val YEAR_START = 2025
+const val NEW_ID = 0L
 
 sealed class BottomNavItem(
     val titleId: Int,

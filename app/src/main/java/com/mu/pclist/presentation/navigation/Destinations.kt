@@ -11,6 +11,8 @@ sealed class Destinations {
     @Serializable
     data object OfficeListDestination : Destinations()
     @Serializable
+    data class OfficeDestination(val id: Long) : Destinations()
+    @Serializable
     data object UserListDestination : Destinations()
     @Serializable
     data object PCListDestination : Destinations()

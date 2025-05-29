@@ -40,4 +40,8 @@ interface OfficeDao {
             "LEFT JOIN table_users u ON u.id = o.user_id " +
             "ORDER BY o.code")
     fun officeList() : Flow<List<OfficeModel>>
+
+    @Query("SELECT * FROM table_offices " +
+            "WHERE id = :id")
+    fun office(id: Long): Flow<OfficeEntity>
 }

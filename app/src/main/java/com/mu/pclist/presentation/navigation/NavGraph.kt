@@ -1,4 +1,4 @@
-package com.mu.pclist.presentation.navigation.destination
+package com.mu.pclist.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
