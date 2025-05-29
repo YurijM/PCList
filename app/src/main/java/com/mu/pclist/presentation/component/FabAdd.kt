@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FabAdd(
+    alignment: Alignment = Alignment.BottomEnd,
     onAdd: () -> Unit
 ) {
     Box(
@@ -28,7 +29,7 @@ fun FabAdd(
             contentColor = MaterialTheme.colorScheme.onSurface,
             shape = CircleShape,
             onClick = { onAdd() },
-            modifier = Modifier.align(alignment = Alignment.BottomEnd)
+            modifier = Modifier.align(alignment = alignment)
         ) {
             Icon(Icons.Filled.Add, null)
         }
