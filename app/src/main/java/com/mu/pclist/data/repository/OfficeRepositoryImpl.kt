@@ -22,6 +22,6 @@ class OfficeRepositoryImpl(
     }
 
     override fun officeList(): Flow<List<OfficeModel>> {
-        return officeList()
+        return dao.officeList()
     }
 }

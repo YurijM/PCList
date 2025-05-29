@@ -21,6 +21,9 @@ import androidx.room.PrimaryKey
             value = ["short_name"],
             unique = true
         ),
+        Index(
+            value = ["user_id"]
+        ),
     ],
     foreignKeys = [
         ForeignKey(

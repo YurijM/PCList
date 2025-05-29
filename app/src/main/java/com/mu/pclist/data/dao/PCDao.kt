@@ -22,11 +22,12 @@ interface PCDao {
     suspend fun delete(pc: PCEntity)
 
     @Query("SELECT p.id, p.inventory_number AS inventoryNumber, " +
-            "o.id AS officeId, o.short_name as office, " +
-            "u.id AS userId, u.service_number AS serviceNumber, u.family, u.name, u.patronymic " +
+            "IFNULL(o.id, 0) AS officeId, IFNULL(o.short_name, '') as office, " +
+            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, " +
+            "IFNULL(u.family, '') AS family, IFNULL(u.name, '') AS name, IFNULL(u.patronymic, '') AS patronymic " +
             "FROM table_pc p " +
-            "INNER JOIN table_users u ON u.id = p.user_id " +
-            "INNER JOIN table_offices o ON o.id = u.office_id " +
+            "LEFT JOIN table_users u ON u.id = p.user_id " +
+            "LEFT JOIN table_offices o ON o.id = u.office_id " +
             "ORDER BY p.inventory_number")
     fun pcList(): Flow<List<PCModel>>
 }

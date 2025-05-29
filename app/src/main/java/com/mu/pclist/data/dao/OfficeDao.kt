@@ -34,9 +34,10 @@ interface OfficeDao {
     }
 
     @Query("SELECT o.id, o.code, o.office, o.short_name AS shortName, " +
-            "u.id AS userId, u.service_number AS serviceNumber, u.family, u.name, u.patronymic " +
+            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, " +
+            "IFNULL(u.family, '') AS family, IFNULL(u.name, '') AS name, IFNULL(u.patronymic, '') AS patronymic " +
             "FROM table_offices o " +
-            "INNER JOIN table_users u ON u.id = o.user_id " +
+            "LEFT JOIN table_users u ON u.id = o.user_id " +
             "ORDER BY o.code")
     fun officeList() : Flow<List<OfficeModel>>
 }

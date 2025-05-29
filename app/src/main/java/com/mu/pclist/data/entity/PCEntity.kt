@@ -12,7 +12,10 @@ import androidx.room.PrimaryKey
         Index(
             value = ["inventory_number"],
             unique = true
-        )
+        ),
+        Index(
+            value = ["user_id"]
+        ),
     ],
     foreignKeys = [
         ForeignKey(

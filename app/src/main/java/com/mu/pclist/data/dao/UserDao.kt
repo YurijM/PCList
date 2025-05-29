@@ -22,21 +22,29 @@ interface UserDao {
     @Delete
     suspend fun delete(user: UserEntity)
 
+    @Query("UPDATE table_offices " +
+            "SET user_id = NULL " +
+            "WHERE user_id = :userId")
+    suspend fun setOfficeUserNull(userId: Long)
+
     @Query("UPDATE table_pc " +
             "SET user_id = NULL " +
             "WHERE user_id = :userId")
-    suspend fun setUserNull(userId: Long)
+    suspend fun setPCUserNull(userId: Long)
 
     @Transaction
     suspend fun deleteUser(user: UserEntity) {
-        setUserNull(user.id)
+        setOfficeUserNull(user.id)
+        setPCUserNull(user.id)
         delete(user)
     }
 
     @Query("SELECT u.id, u.service_number AS serviceNumber, u.family, u.name, u.patronymic, " +
-            "o.id AS officeId, o.short_name AS office " +
+            "IFNULL(o.id, 0) AS officeId, IFNULL(o.short_name, '') AS office, " +
+            "IFNULL(p.inventory_number, '') AS inventoryNumber " +
             "FROM table_users u " +
-            "INNER JOIN table_offices o ON o.id = u.office_id " +
+            "LEFT JOIN table_offices o ON o.id = u.office_id " +
+            "LEFT JOIN table_pc p ON p.user_id = u.id " +
             "ORDER BY u.service_number")
     fun userList() : Flow<List<UserModel>>
 }

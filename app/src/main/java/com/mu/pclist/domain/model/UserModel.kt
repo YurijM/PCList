@@ -8,4 +8,5 @@ data class UserModel(
     val patronymic: String = "",
     val officeId: Long = 0,
     val office: String = "",
+    val inventoryNumber: String = "",
 )

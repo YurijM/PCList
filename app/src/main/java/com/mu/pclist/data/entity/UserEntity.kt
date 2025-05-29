@@ -17,6 +17,9 @@ import androidx.room.PrimaryKey
             value = ["family", "name", "patronymic"],
             unique = true
         ),
+        Index(
+            value = ["office_id"]
+        ),
     ],
     foreignKeys = [
         ForeignKey(
