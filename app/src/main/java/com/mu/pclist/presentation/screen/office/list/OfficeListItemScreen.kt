@@ -116,7 +116,7 @@ fun OfficeListItemScreen(
     }
     if (openDialog) {
         DialogText(
-            text = "Вы действительно хотите удалить отдел ${office.shortName} ?",
+            text = "Вы действительно хотите удалить отдел \"${office.shortName}\" ?",
             showCancel = true,
             onDismiss = {},
             titleOK = stringResource(R.string.yes),

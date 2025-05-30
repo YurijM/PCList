@@ -73,7 +73,7 @@ fun OfficeListScreen(
                         OfficeListItemScreen(
                             office = office,
                             onEdit = { toOffice(OfficeDestination(office.id)) },
-                            onDelete = {},
+                            onDelete = { viewModel.onEvent(OfficeListEvent.OnOfficeListDelete(office)) },
                         )
                     }
                 }
