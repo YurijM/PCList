@@ -39,6 +39,7 @@ fun DropDownList(
     list: List<String>,
     label: String,
     selectedItem: String,
+    textAlign: TextAlign = TextAlign.Start,
     onClick: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -57,7 +58,7 @@ fun DropDownList(
             interactionSource = interactionSource,
             textStyle = TextStyle(
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                textAlign = TextAlign.Center
+                textAlign = textAlign
             ),
             modifier = modifier
                 .menuAnchor(MenuAnchorType.PrimaryNotEditable)
@@ -70,7 +71,7 @@ fun DropDownList(
                     if (label.isNotBlank()) {
                         Text(
                             text = label,
-                            textAlign = TextAlign.Center
+                            //textAlign = TextAlign.Center
                         )
                     }
                 },
@@ -128,7 +129,7 @@ fun DropDownList(
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = item,
-                            textAlign = TextAlign.Center
+                            textAlign = textAlign
                         )
                     }
                 )

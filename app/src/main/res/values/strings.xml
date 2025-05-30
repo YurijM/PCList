@@ -13,9 +13,12 @@
 
     <string name="pc_list">Список ПК</string>
     <string name="user_list">Список пользователей</string>
-    <string name="office_list">Список отделов</string>
 
-    <string name="pc">ПК</string>
+    <string name="computers">Компьютеры</string>
     <string name="users">Пользователи</string>
     <string name="offices">Отделы</string>
+
+    <string name="computer">Компьютер</string>
+    <string name="office">Отдел</string>
+    <string name="user">Пользователь</string>
 </resources>
