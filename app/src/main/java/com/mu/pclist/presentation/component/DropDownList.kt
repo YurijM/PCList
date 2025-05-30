@@ -69,10 +69,7 @@ fun DropDownList(
                 value = selectedItem,
                 label = {
                     if (label.isNotBlank()) {
-                        Text(
-                            text = label,
-                            //textAlign = TextAlign.Center
-                        )
+                        Text(label)
                     }
                 },
                 innerTextField = innerTextField,

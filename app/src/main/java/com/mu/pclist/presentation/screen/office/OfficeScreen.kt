@@ -1,5 +1,6 @@
 package com.mu.pclist.presentation.screen.office
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,6 +49,10 @@ fun OfficeScreen(
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth(.85f),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.background
+                ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 8.dp
                 ),
@@ -60,7 +65,7 @@ fun OfficeScreen(
                 ) {
                     Title(
                         title = stringResource(R.string.office),
-                        padding = PaddingValues(0.dp)
+                        padding = PaddingValues(top = 4.dp)
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
@@ -81,7 +86,7 @@ fun OfficeScreen(
                                 keyboardType = KeyboardType.NumberPassword,
                             ),
                             height = 40.dp,
-                            onChange = {},
+                            onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeCodeChange(value)) },
                             modifier = Modifier
                                 .padding(4.dp)
                                 .width(48.dp)
@@ -92,7 +97,7 @@ fun OfficeScreen(
                             value = viewModel.office.shortName,
                             textAlign = TextAlign.Center,
                             height = 40.dp,
-                            onChange = {},
+                            onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeShortNameChange(value)) },
                             modifier = Modifier
                                 .width(120.dp)
                         )
@@ -102,18 +107,19 @@ fun OfficeScreen(
                         value = viewModel.office.office,
                         height = 48.dp,
                         singleLine = false,
-                        onChange = {},
+                        onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeOfficeChange(value)) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                     )
                     DropDownList(
-                        list = listOf("", "1", "2", "3", "4"),
+                        list = viewModel.familyList,
                         label = stringResource(R.string.user),
-                        selectedItem = if (viewModel.office.userId == null) "" else viewModel.office.userId
-                            .toString(),
-                        onClick = {  },
-                        modifier = Modifier.width(248.dp)
+                        selectedItem = "${viewModel.chief.family} ${viewModel.chief.name} ${viewModel.chief.patronymic}",
+                        onClick = { selectedItem -> viewModel.onEvent(OfficeEvent.OnOfficeChiefChange(selectedItem)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        //.padding(8.dp)
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
@@ -121,7 +127,10 @@ fun OfficeScreen(
                     OkAndCancel(
                         titleOk = stringResource(R.string.save),
                         enabledOk = true,
-                        onOK = {  },
+                        onOK = {
+                            viewModel.onEvent(OfficeEvent.OnOfficeSave)
+                            toOfficeList()
+                        },
                         onCancel = { toOfficeList() },
                     )
                 }
