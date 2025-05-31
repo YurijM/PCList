@@ -41,31 +41,25 @@ class OfficeViewModel @Inject constructor(
 
             viewModelScope.launch {
                 officeRepository.office(id).collect { item ->
-                    office = OfficeEntity(
-                        id = item.id,
-                        code = item.code,
-                        office = item.office,
-                        shortName = item.shortName,
-                        userId = item.userId
-                    )
+                    office = item
                 }
             }
-            viewModelScope.launch {
-                familyList.add("")
-                userRepository.userList().collect { list ->
-                    users = list.filter { it.officeId == id }
-                        .sortedWith(
-                            compareByDescending<UserModel> { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                    users.forEach { user ->
-                        if (user.id.toInt() == office.userId)
-                            chief = user
-                        familyList.add(
-                            "${user.family} ${user.name} ${user.patronymic}"
-                        )
-                    }
+        }
+        viewModelScope.launch {
+            familyList.add("")
+            userRepository.userList().collect { list ->
+                users = list.filter { it.officeId == id }
+                    .sortedWith(
+                        compareByDescending<UserModel> { it.family }
+                            .thenBy { it.name }
+                            .thenBy { it.patronymic }
+                    )
+                users.forEach { user ->
+                    if (user.id.toInt() == office.userId)
+                        chief = user
+                    familyList.add(
+                        "${user.family} ${user.name} ${user.patronymic}"
+                    )
                 }
             }
         }

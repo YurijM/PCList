@@ -21,4 +21,10 @@
     <string name="computer">Компьютер</string>
     <string name="office">Отдел</string>
     <string name="user">Пользователь</string>
+    <string name="chief">Руководитель</string>
+
+    <string name="family">Фамилия</string>
+    <string name="name">Имя</string>
+    <string name="patronymic">Отчество</string>
+    <string name="service_number">Табельный номер</string>
 </resources>

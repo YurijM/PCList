@@ -5,11 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -89,7 +87,11 @@ fun UserListItemScreen(
                         lineHeight = 1.em
                     )
                     if (user.inventoryNumber.isNotEmpty()) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = ",",
+                            lineHeight = 1.em,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
                         Text(
                             text = "ПК инв. № ${user.inventoryNumber}.",
                             lineHeight = 1.em

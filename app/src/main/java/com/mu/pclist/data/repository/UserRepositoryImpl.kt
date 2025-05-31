@@ -24,4 +24,8 @@ class UserRepositoryImpl(
     override fun userList(): Flow<List<UserModel>> {
         return dao.userList()
     }
+
+    override fun user(id: Long): Flow<UserEntity> {
+        return dao.user(id)
+    }
 }

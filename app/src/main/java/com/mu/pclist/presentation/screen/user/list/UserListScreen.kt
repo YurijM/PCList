@@ -25,10 +25,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.pclist.R
 import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.Title
+import com.mu.pclist.presentation.navigation.Destinations.UserDestination
+import com.mu.pclist.presentation.util.NEW_ID
 
 @Composable
 fun UserListScreen(
-    viewModel: UserListViewModel = hiltViewModel()
+    viewModel: UserListViewModel = hiltViewModel(),
+    toUser: (UserDestination) -> Unit
 ) {
     val users by viewModel.users.collectAsState(initial = null)
 
@@ -69,7 +72,7 @@ fun UserListScreen(
                     items(users!!) { user ->
                         UserListItemScreen(
                             user = user,
-                            onEdit = {  },
+                            onEdit = { toUser(UserDestination(user.id)) },
                             onDelete = { viewModel.onEvent(UserListEvent.OnUserListDelete(user)) },
                         )
                     }
@@ -78,6 +81,6 @@ fun UserListScreen(
         }
         FabAdd(
             alignment = Alignment.BottomCenter
-        ) {  }
+        ) { toUser(UserDestination(NEW_ID)) }
     }
 }

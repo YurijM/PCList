@@ -1,0 +1,136 @@
+package com.mu.pclist.presentation.screen.user
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.mu.pclist.data.entity.UserEntity
+import com.mu.pclist.domain.model.OfficeModel
+import com.mu.pclist.domain.model.PCModel
+import com.mu.pclist.domain.repository.OfficeRepository
+import com.mu.pclist.domain.repository.PCRepository
+import com.mu.pclist.domain.repository.UserRepository
+import com.mu.pclist.presentation.navigation.Destinations.UserDestination
+import com.mu.pclist.presentation.util.NEW_ID
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val pcRepository: PCRepository,
+    private val officeRepository: OfficeRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private var id by mutableLongStateOf(NEW_ID)
+    private var newUser = true
+    var user by mutableStateOf(UserEntity())
+    private var offices = emptyList<OfficeModel>()
+    private var computers = emptyList<PCModel>()
+    var officeList = mutableStateListOf<String>()
+    var office by mutableStateOf(OfficeModel())
+    var pcList = mutableStateListOf<String>()
+    var pc by mutableStateOf(PCModel())
+
+    init {
+        val args = savedStateHandle.toRoute<UserDestination>()
+        id = args.id
+
+        if (id != NEW_ID) {
+            newUser = false
+
+            viewModelScope.launch {
+                userRepository.user(id).collect { item ->
+                    user = item
+                }
+            }
+        }
+        viewModelScope.launch {
+            officeList.add("")
+            officeRepository.officeList().collect { list ->
+                offices = list.sortedBy { it.shortName }
+                offices.forEach { item ->
+                    if (item.id.toInt() == user.officeId)
+                        office = item
+                    officeList.add(item.shortName)
+                }
+            }
+        }
+        viewModelScope.launch {
+            pcList.add("")
+            pcRepository.pcList().collect { list ->
+                computers = list.sortedBy { it.inventoryNumber }
+                computers.forEach { item ->
+                    if (item.id.toInt() == user.pcId)
+                        pc = item
+                    pcList.add(item.inventoryNumber)
+                }
+            }
+        }
+    }
+
+    fun onEvent(event: UserEvent) {
+        when (event) {
+            is UserEvent.OnUserFamilyChange -> {
+                user = user.copy(family = event.family)
+            }
+
+            is UserEvent.OnUserNameChange -> {
+                user = user.copy(name = event.name)
+            }
+
+            is UserEvent.OnUserPatronymicChange -> {
+                user = user.copy(patronymic = event.patronymic)
+            }
+
+            is UserEvent.OnUserServiceNumberChange -> {
+                user = user.copy(serviceNumber = event.serviceNumber)
+            }
+
+            is UserEvent.OnUserOfficeChange -> {
+                val id: Int?
+                if (event.office.isEmpty()) {
+                    id = null
+                    office = OfficeModel()
+                } else {
+                    office = offices.find { it.shortName == event.office } ?: OfficeModel()
+                    id = office.id.toInt()
+                }
+                user = user.copy(officeId = id)
+            }
+
+            is UserEvent.OnUserPCChange -> {
+                val id: Int?
+                if (event.pc.isEmpty()) {
+                    id = null
+                    pc = PCModel()
+                } else {
+                    pc = computers.find { it.inventoryNumber == event.pc } ?: PCModel()
+                    id = pc.id.toInt()
+                }
+                user = user.copy(pcId = id)
+            }
+
+            is UserEvent.OnUserSave -> {
+                if (user.officeId == 0)
+                    user = user.copy(officeId = null)
+
+                if (user.pcId == 0)
+                    user = user.copy(pcId = null)
+
+                viewModelScope.launch {
+                    if (newUser)
+                        userRepository.insert(user)
+                    else
+                        userRepository.update(user)
+                }
+            }
+        }
+    }
+}

@@ -8,6 +8,9 @@ import com.mu.pclist.presentation.navigation.destination.office.navigationToOffi
 import com.mu.pclist.presentation.navigation.destination.office.office
 import com.mu.pclist.presentation.navigation.destination.office.officeList
 import com.mu.pclist.presentation.navigation.destination.pc.pcList
+import com.mu.pclist.presentation.navigation.destination.user.navigateToUser
+import com.mu.pclist.presentation.navigation.destination.user.navigationToUserList
+import com.mu.pclist.presentation.navigation.destination.user.user
 import com.mu.pclist.presentation.navigation.destination.user.userList
 
 @Composable
@@ -26,7 +29,14 @@ fun NavGraphMain(
         office(
             toOfficeList = { navController.navigationToOfficeList() }
         )
-        userList()
+        userList(
+            toUser = { args ->
+                navController.navigateToUser(args)
+            }
+        )
+        user(
+            toUserList = { navController.navigationToUserList() }
+        )
         pcList()
     }
 }

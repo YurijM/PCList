@@ -9,4 +9,5 @@ interface UserRepository {
     suspend fun update(user: UserEntity): Int
     suspend fun deleteUser(user: UserEntity)
     fun userList(): Flow<List<UserModel>>
+    fun user(id: Long): Flow<UserEntity>
 }

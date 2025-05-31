@@ -47,4 +47,8 @@ interface UserDao {
             "LEFT JOIN table_pc p ON p.user_id = u.id " +
             "ORDER BY u.service_number")
     fun userList() : Flow<List<UserModel>>
+
+    @Query("SELECT * FROM table_users " +
+            "WHERE id = :id")
+    fun user(id: Long): Flow<UserEntity>
 }

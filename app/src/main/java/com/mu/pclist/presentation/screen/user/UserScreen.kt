@@ -1,17 +1,13 @@
-package com.mu.pclist.presentation.screen.office
+package com.mu.pclist.presentation.screen.user
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,8 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.pclist.R
@@ -33,9 +27,9 @@ import com.mu.pclist.presentation.component.OutlinedTextEdit
 import com.mu.pclist.presentation.component.Title
 
 @Composable
-fun OfficeScreen(
-    viewModel: OfficeViewModel = hiltViewModel(),
-    toOfficeList: () -> Unit
+fun UserScreen(
+    viewModel: UserViewModel = hiltViewModel(),
+    toUserList: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -48,7 +42,7 @@ fun OfficeScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Card(
-                modifier = Modifier.fillMaxWidth(.85f),
+                modifier = Modifier.fillMaxWidth(.75f),
                 border = BorderStroke(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.background
@@ -64,62 +58,64 @@ fun OfficeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Title(
-                        title = stringResource(R.string.office),
+                        title = stringResource(R.string.user),
                         padding = PaddingValues(top = 4.dp)
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
+                    OutlinedTextEdit(
+                        label = stringResource(R.string.family),
+                        value = viewModel.user.family,
+                        height = 40.dp,
+                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserFamilyChange(value)) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
-                    ) {
-                        OutlinedTextEdit(
-                            label = "Код",
-                            value = viewModel.office.code,
-                            textAlign = TextAlign.Center,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.NumberPassword,
-                            ),
-                            height = 40.dp,
-                            onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeCodeChange(value)) },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .width(48.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        OutlinedTextEdit(
-                            label = "Сокращение",
-                            value = viewModel.office.shortName,
-                            textAlign = TextAlign.Center,
-                            height = 40.dp,
-                            onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeShortNameChange(value)) },
-                            modifier = Modifier
-                                .width(120.dp)
-                        )
-                    }
+                            .padding(8.dp)
+                    )
                     OutlinedTextEdit(
-                        label = "Отдел",
-                        value = viewModel.office.office,
-                        height = 48.dp,
-                        singleLine = false,
-                        onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeOfficeChange(value)) },
+                        label = stringResource(R.string.name),
+                        value = viewModel.user.name,
+                        height = 40.dp,
+                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserNameChange(value)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    )
+                    OutlinedTextEdit(
+                        label = stringResource(R.string.patronymic),
+                        value = viewModel.user.patronymic,
+                        height = 40.dp,
+                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserPatronymicChange(value)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    )
+                    OutlinedTextEdit(
+                        label = stringResource(R.string.service_number),
+                        value = viewModel.user.serviceNumber,
+                        height = 40.dp,
+                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                     )
                     DropDownList(
-                        list = viewModel.familyList,
-                        label = stringResource(R.string.chief),
-                        selectedItem = "${viewModel.chief.family} ${viewModel.chief.name} ${viewModel.chief.patronymic}",
-                        onClick = { selectedItem -> viewModel.onEvent(OfficeEvent.OnOfficeChiefChange(selectedItem)) },
+                        list = viewModel.officeList,
+                        label = stringResource(R.string.office),
+                        selectedItem = viewModel.office.shortName,
+                        onClick = { selectedItem -> viewModel.onEvent(UserEvent.OnUserOfficeChange(selectedItem)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    DropDownList(
+                        list = viewModel.pcList,
+                        label = stringResource(R.string.computer),
+                        selectedItem = viewModel.pc.inventoryNumber,
+                        onClick = { selectedItem -> viewModel.onEvent(UserEvent.OnUserPCChange(selectedItem)) },
                         modifier = Modifier
                             .fillMaxWidth()
-                        //.padding(8.dp)
+                            .padding(bottom = 8.dp)
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
@@ -128,10 +124,10 @@ fun OfficeScreen(
                         titleOk = stringResource(R.string.save),
                         enabledOk = true,
                         onOK = {
-                            viewModel.onEvent(OfficeEvent.OnOfficeSave)
-                            toOfficeList()
+                            viewModel.onEvent(UserEvent.OnUserSave)
+                            toUserList()
                         },
-                        onCancel = { toOfficeList() },
+                        onCancel = { toUserList() },
                     )
                 }
             }
