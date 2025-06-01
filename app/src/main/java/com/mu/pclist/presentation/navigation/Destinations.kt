@@ -20,4 +20,6 @@ sealed class Destinations {
 
     @Serializable
     data object PCListDestination : Destinations()
+    @Serializable
+    data class PCDestination(val id: Long) : Destinations()
 }

@@ -7,6 +7,9 @@ import com.mu.pclist.presentation.navigation.destination.office.navigateToOffice
 import com.mu.pclist.presentation.navigation.destination.office.navigationToOfficeList
 import com.mu.pclist.presentation.navigation.destination.office.office
 import com.mu.pclist.presentation.navigation.destination.office.officeList
+import com.mu.pclist.presentation.navigation.destination.pc.navigateToPC
+import com.mu.pclist.presentation.navigation.destination.pc.navigationToPCList
+import com.mu.pclist.presentation.navigation.destination.pc.pc
 import com.mu.pclist.presentation.navigation.destination.pc.pcList
 import com.mu.pclist.presentation.navigation.destination.user.navigateToUser
 import com.mu.pclist.presentation.navigation.destination.user.navigationToUserList
@@ -37,6 +40,13 @@ fun NavGraphMain(
         user(
             toUserList = { navController.navigationToUserList() }
         )
-        pcList()
+        pcList(
+            toPC = { args ->
+                navController.navigateToPC(args)
+            }
+        )
+        pc(
+            toPCList = { navController.navigationToPCList() }
+        )
     }
 }
