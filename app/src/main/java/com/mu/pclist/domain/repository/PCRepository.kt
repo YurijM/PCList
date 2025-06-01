@@ -9,4 +9,5 @@ interface PCRepository {
     suspend fun update(pc: PCEntity): Int
     suspend fun delete(pc: PCEntity)
     fun pcList(): Flow<List<PCModel>>
+    fun pc(id: Long): Flow<PCEntity>
 }

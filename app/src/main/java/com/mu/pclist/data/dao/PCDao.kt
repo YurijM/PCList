@@ -30,4 +30,8 @@ interface PCDao {
             "LEFT JOIN table_offices o ON o.id = u.office_id " +
             "ORDER BY p.inventory_number")
     fun pcList(): Flow<List<PCModel>>
+
+    @Query("SELECT * FROM table_pc " +
+            "WHERE id = :id")
+    fun pc(id: Long): Flow<PCEntity>
 }

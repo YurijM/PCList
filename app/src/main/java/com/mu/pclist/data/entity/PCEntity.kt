@@ -29,5 +29,5 @@ import androidx.room.PrimaryKey
 data class PCEntity(
     @PrimaryKey(true) val id: Long = 0,
     @ColumnInfo(name = "inventory_number") val inventoryNumber: String = "",
-    @ColumnInfo(name = "user_id", defaultValue = "NULL") val userId: Long?
+    @ColumnInfo(name = "user_id", defaultValue = "NULL") val userId: Int? = null
 )

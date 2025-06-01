@@ -24,4 +24,8 @@ class PCRepositoryImpl(
     override fun pcList(): Flow<List<PCModel>> {
         return dao.pcList()
     }
+
+    override fun pc(id: Long): Flow<PCEntity> {
+        return dao.pc(id)
+    }
 }
