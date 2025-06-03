@@ -17,6 +17,7 @@ import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.UserDestination
 import com.mu.pclist.presentation.util.NEW_ID
+import com.mu.pclist.presentation.util.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,6 +39,19 @@ class UserViewModel @Inject constructor(
     var pcList = mutableStateListOf<String>()
     var pc by mutableStateOf(PCModel())
 
+    var familyError = ""
+        private set
+    var nameError = ""
+        private set
+    var patronymicError = ""
+        private set
+    var serviceNumberError = ""
+        private set
+    var phoneError = ""
+        private set
+    var enabled = false
+        private set
+
     init {
         val args = savedStateHandle.toRoute<UserDestination>()
         id = args.id
@@ -48,6 +62,7 @@ class UserViewModel @Inject constructor(
             viewModelScope.launch {
                 userRepository.user(id).collect { item ->
                     user = item
+                    enabled = checkValue()
                 }
             }
         }
@@ -79,22 +94,32 @@ class UserViewModel @Inject constructor(
         when (event) {
             is UserEvent.OnUserFamilyChange -> {
                 user = user.copy(family = event.family)
+                familyError = checkIsFieldEmpty(event.family)
+                enabled = checkValue()
             }
 
             is UserEvent.OnUserNameChange -> {
                 user = user.copy(name = event.name)
+                nameError = checkIsFieldEmpty(event.name)
+                enabled = checkValue()
             }
 
             is UserEvent.OnUserPatronymicChange -> {
                 user = user.copy(patronymic = event.patronymic)
-            }
-
-            is UserEvent.OnUserPhoneChange -> {
-                user = user.copy(phone = event.phone)
+                patronymicError = checkIsFieldEmpty(event.patronymic)
+                enabled = checkValue()
             }
 
             is UserEvent.OnUserServiceNumberChange -> {
                 user = user.copy(serviceNumber = event.serviceNumber)
+                serviceNumberError = checkIsFieldEmpty(event.serviceNumber)
+                enabled = checkValue()
+            }
+
+            is UserEvent.OnUserPhoneChange -> {
+                user = user.copy(phone = event.phone)
+                phoneError = checkIsFieldEmpty(event.phone)
+                enabled = checkValue()
             }
 
             is UserEvent.OnUserOfficeChange -> {
@@ -137,4 +162,11 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    private fun checkValue(): Boolean =
+        user.family.isNotBlank()
+                && user.name.isNotBlank()
+                && user.patronymic.isNotBlank()
+                && user.serviceNumber.isNotBlank()
+                && user.phone.isNotBlank()
 }

@@ -52,6 +52,7 @@ class OfficeViewModel @Inject constructor(
             viewModelScope.launch {
                 officeRepository.office(id).collect { item ->
                     office = item
+                    enabled = checkValue()
                 }
             }
         }
@@ -122,5 +123,5 @@ class OfficeViewModel @Inject constructor(
     }
 
     private fun checkValue(): Boolean =
-        codeError.isBlank() && shortNameError.isBlank() && officeError.isBlank()
+        office.code.isNotBlank() && office.shortName.isNotBlank() && office.office.isNotBlank()
 }

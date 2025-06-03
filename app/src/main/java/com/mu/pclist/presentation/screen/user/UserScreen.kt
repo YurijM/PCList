@@ -71,6 +71,7 @@ fun UserScreen(
                         value = viewModel.user.family,
                         height = 40.dp,
                         onChange = { value -> viewModel.onEvent(UserEvent.OnUserFamilyChange(value)) },
+                        error = viewModel.familyError,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
@@ -80,6 +81,7 @@ fun UserScreen(
                         value = viewModel.user.name,
                         height = 40.dp,
                         onChange = { value -> viewModel.onEvent(UserEvent.OnUserNameChange(value)) },
+                        error = viewModel.nameError,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
@@ -89,6 +91,7 @@ fun UserScreen(
                         value = viewModel.user.patronymic,
                         height = 40.dp,
                         onChange = { value -> viewModel.onEvent(UserEvent.OnUserPatronymicChange(value)) },
+                        error = viewModel.patronymicError,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
@@ -99,6 +102,7 @@ fun UserScreen(
                             value = viewModel.user.serviceNumber,
                             height = 40.dp,
                             onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
+                            error = viewModel.serviceNumberError,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(8.dp)
@@ -108,6 +112,7 @@ fun UserScreen(
                             value = viewModel.user.phone,
                             height = 40.dp,
                             onChange = { value -> viewModel.onEvent(UserEvent.OnUserPhoneChange(value)) },
+                            error = viewModel.phoneError,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(8.dp)
@@ -134,7 +139,7 @@ fun UserScreen(
                     )
                     OkAndCancel(
                         titleOk = stringResource(R.string.save),
-                        enabledOk = true,
+                        enabledOk = viewModel.enabled,
                         onOK = {
                             viewModel.onEvent(UserEvent.OnUserSave)
                             toUserList()
