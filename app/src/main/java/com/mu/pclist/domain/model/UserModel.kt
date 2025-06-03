@@ -6,6 +6,7 @@ data class UserModel(
     val family: String = "",
     val name: String = "",
     val patronymic: String = "",
+    val phone: String = "",
     val officeId: Long = 0,
     val office: String = "",
     val pcId: Long = 0,

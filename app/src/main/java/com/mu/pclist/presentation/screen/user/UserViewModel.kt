@@ -89,6 +89,10 @@ class UserViewModel @Inject constructor(
                 user = user.copy(patronymic = event.patronymic)
             }
 
+            is UserEvent.OnUserPhoneChange -> {
+                user = user.copy(phone = event.phone)
+            }
+
             is UserEvent.OnUserServiceNumberChange -> {
                 user = user.copy(serviceNumber = event.serviceNumber)
             }

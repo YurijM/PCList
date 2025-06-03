@@ -23,7 +23,7 @@ interface PCDao {
 
     @Query("SELECT p.id, p.inventory_number AS inventoryNumber, " +
             "IFNULL(o.id, 0) AS officeId, IFNULL(o.short_name, '') as office, " +
-            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, " +
+            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, IFNULL(u.phone, '') AS phone, " +
             "IFNULL(u.family, '') AS family, IFNULL(u.name, '') AS name, IFNULL(u.patronymic, '') AS patronymic " +
             "FROM table_pc p " +
             "LEFT JOIN table_users u ON u.id = p.user_id " +

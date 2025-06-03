@@ -91,7 +91,7 @@ fun PCListItemScreen(
                         lineHeight = 1.em
                     )
                     Text(
-                        text = "таб. № ${pc.serviceNumber}",
+                        text = "таб. № ${pc.serviceNumber}, тел. ${pc.phone}",
                         style = MaterialTheme.typography.titleSmall,
                         fontStyle = FontStyle.Italic,
                         lineHeight = 1.em

@@ -8,6 +8,7 @@ data class PCModel(
     val family: String = "",
     val name: String = "",
     val patronymic: String = "",
+    val phone: String = "",
     val officeId: Long = 0,
     val office: String = ""
 )

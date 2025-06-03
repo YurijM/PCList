@@ -34,7 +34,7 @@ interface OfficeDao {
     }
 
     @Query("SELECT o.id, o.code, o.office, o.short_name AS shortName, " +
-            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, " +
+            "IFNULL(u.id, 0) AS userId, IFNULL(u.service_number, '') AS serviceNumber, IFNULL(u.phone, '') AS phone, " +
             "IFNULL(u.family, '') AS family, IFNULL(u.name, '') AS name, IFNULL(u.patronymic, '') AS patronymic " +
             "FROM table_offices o " +
             "LEFT JOIN table_users u ON u.id = o.user_id " +

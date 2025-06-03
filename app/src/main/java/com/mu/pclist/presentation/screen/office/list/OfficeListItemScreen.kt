@@ -94,6 +94,12 @@ fun OfficeListItemScreen(
                         fontStyle = FontStyle.Italic,
                         lineHeight = 1.em
                     )
+                    Text(
+                        text = "таб. № ${office.serviceNumber}, тел. ${office.phone}",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontStyle = FontStyle.Italic,
+                        lineHeight = 1.em
+                    )
                 }
             }
             IconButton(

@@ -39,7 +39,7 @@ interface UserDao {
         delete(user)
     }
 
-    @Query("SELECT u.id, u.service_number AS serviceNumber, u.family, u.name, u.patronymic, " +
+    @Query("SELECT u.id, u.service_number AS serviceNumber, u.family, u.name, u.patronymic, u.phone, " +
             "IFNULL(o.id, 0) AS officeId, IFNULL(o.short_name, '') AS office, " +
             "IFNULL(p.id, 0) AS pcId, IFNULL(p.inventory_number, '') AS inventoryNumber " +
             "FROM table_users u " +

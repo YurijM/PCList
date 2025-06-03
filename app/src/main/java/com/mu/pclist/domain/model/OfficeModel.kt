@@ -10,4 +10,5 @@ data class OfficeModel(
     val family: String = "",
     val name: String = "",
     val patronymic: String = "",
+    val phone: String = "",
 )

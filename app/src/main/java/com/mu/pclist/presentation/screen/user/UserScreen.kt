@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,7 +43,7 @@ fun UserScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Card(
-                modifier = Modifier.fillMaxWidth(.75f),
+                modifier = Modifier.fillMaxWidth(.85f),
                 border = BorderStroke(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.background
@@ -92,15 +93,26 @@ fun UserScreen(
                             .fillMaxWidth()
                             .padding(8.dp)
                     )
-                    OutlinedTextEdit(
-                        label = stringResource(R.string.service_number),
-                        value = viewModel.user.serviceNumber,
-                        height = 40.dp,
-                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    )
+                    Row {
+                        OutlinedTextEdit(
+                            label = stringResource(R.string.service_number),
+                            value = viewModel.user.serviceNumber,
+                            height = 40.dp,
+                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp)
+                        )
+                        OutlinedTextEdit(
+                            label = stringResource(R.string.phone),
+                            value = viewModel.user.phone,
+                            height = 40.dp,
+                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserPhoneChange(value)) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp)
+                        )
+                    }
                     DropDownList(
                         list = viewModel.officeList,
                         label = stringResource(R.string.office),

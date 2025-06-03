@@ -36,6 +36,7 @@ data class UserEntity(
     val family: String = "",
     val name: String = "",
     val patronymic: String = "",
+    val phone: String = "",
     @ColumnInfo(name = "office_id", defaultValue = "NULL") val officeId: Int? = null,
     @ColumnInfo(name = "pc_id", defaultValue = "NULL") val pcId: Int? = null
 )

@@ -26,6 +26,7 @@
     <string name="family">Фамилия</string>
     <string name="name">Имя</string>
     <string name="patronymic">Отчество</string>
-    <string name="service_number">Табельный номер</string>
+    <string name="phone">Телефон</string>
+    <string name="service_number">Таб. номер</string>
     <string name="inventory_number">Инвентарный номер</string>
 </resources>

@@ -83,7 +83,7 @@ fun UserListItemScreen(
                 )
                 Row {
                     Text(
-                        text = "таб. № ${user.serviceNumber}",
+                        text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
                         lineHeight = 1.em
                     )
                     if (user.inventoryNumber.isNotEmpty()) {
