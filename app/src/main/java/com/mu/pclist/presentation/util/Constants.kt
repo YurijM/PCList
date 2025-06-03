@@ -7,6 +7,8 @@ const val DEBUG_TAG = "pclist"
 const val YEAR_START = 2025
 const val NEW_ID = 0L
 
+const val FIELD_CAN_NOT_BE_EMPTY = "Поле не может быть пустым"
+
 sealed class BottomNavItem(
     val titleId: Int,
     val iconId: Int,
@@ -30,4 +32,3 @@ sealed class BottomNavItem(
         destination = Destinations.PCListDestination
     )
 }
-

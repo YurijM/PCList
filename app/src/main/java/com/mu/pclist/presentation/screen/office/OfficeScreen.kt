@@ -30,6 +30,7 @@ import com.mu.pclist.R
 import com.mu.pclist.presentation.component.DropDownList
 import com.mu.pclist.presentation.component.OkAndCancel
 import com.mu.pclist.presentation.component.OutlinedTextEdit
+import com.mu.pclist.presentation.component.TextError
 import com.mu.pclist.presentation.component.Title
 
 @Composable
@@ -102,12 +103,22 @@ fun OfficeScreen(
                                 .width(120.dp)
                         )
                     }
+                    var error = ""
+                    if (viewModel.codeError.isNotBlank()) error = viewModel.codeError
+                    else if (viewModel.shortNameError.isNotBlank()) error = viewModel.shortNameError
+                    if (error.isNotBlank()) {
+                        TextError(
+                            error = error,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                     OutlinedTextEdit(
                         label = "Отдел",
                         value = viewModel.office.office,
                         height = 48.dp,
                         singleLine = false,
                         onChange = { value -> viewModel.onEvent(OfficeEvent.OnOfficeOfficeChange(value)) },
+                        error = viewModel.officeError,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
@@ -126,7 +137,7 @@ fun OfficeScreen(
                     )
                     OkAndCancel(
                         titleOk = stringResource(R.string.save),
-                        enabledOk = true,
+                        enabledOk = viewModel.enabled,
                         onOK = {
                             viewModel.onEvent(OfficeEvent.OnOfficeSave)
                             toOfficeList()

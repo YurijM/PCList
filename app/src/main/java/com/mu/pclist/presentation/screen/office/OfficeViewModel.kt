@@ -15,6 +15,7 @@ import com.mu.pclist.domain.repository.OfficeRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.OfficeDestination
 import com.mu.pclist.presentation.util.NEW_ID
+import com.mu.pclist.presentation.util.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +32,15 @@ class OfficeViewModel @Inject constructor(
     private var users = emptyList<UserModel>()
     var familyList = mutableStateListOf<String>()
     var chief by mutableStateOf(UserModel())
+
+    var codeError = ""
+        private set
+    var shortNameError = ""
+        private set
+    var officeError = ""
+        private set
+    var enabled = false
+        private set
 
     init {
         val args = savedStateHandle.toRoute<OfficeDestination>()
@@ -69,14 +79,20 @@ class OfficeViewModel @Inject constructor(
         when (event) {
             is OfficeEvent.OnOfficeCodeChange -> {
                 office = office.copy(code = event.code)
+                codeError = checkIsFieldEmpty(event.code)
+                enabled = checkValue()
             }
 
             is OfficeEvent.OnOfficeShortNameChange -> {
                 office = office.copy(shortName = event.shortName)
+                shortNameError = checkIsFieldEmpty(event.shortName)
+                enabled = checkValue()
             }
 
             is OfficeEvent.OnOfficeOfficeChange -> {
                 office = office.copy(office = event.office)
+                officeError = checkIsFieldEmpty(event.office)
+                enabled = checkValue()
             }
 
             is OfficeEvent.OnOfficeChiefChange -> {
@@ -104,4 +120,7 @@ class OfficeViewModel @Inject constructor(
             }
         }
     }
+
+    private fun checkValue(): Boolean =
+        codeError.isBlank() && shortNameError.isBlank() && officeError.isBlank()
 }
