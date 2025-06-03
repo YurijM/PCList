@@ -70,6 +70,7 @@ fun PCScreen(
                         value = viewModel.pc.inventoryNumber,
                         height = 40.dp,
                         onChange = { value -> viewModel.onEvent(PCEvent.OnPCInventoryNumberChange(value)) },
+                        error = viewModel.inventoryNumberError,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
@@ -86,7 +87,7 @@ fun PCScreen(
                     )
                     OkAndCancel(
                         titleOk = stringResource(R.string.save),
-                        enabledOk = true,
+                        enabledOk = viewModel.inventoryNumberError.isBlank(),
                         onOK = {
                             viewModel.onEvent(PCEvent.OnPCSave)
                             toPCList()

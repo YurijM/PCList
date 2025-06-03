@@ -15,6 +15,7 @@ import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.PCDestination
 import com.mu.pclist.presentation.util.NEW_ID
+import com.mu.pclist.presentation.util.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +32,9 @@ class PCViewModel @Inject constructor(
     private var users = emptyList<UserModel>()
     var familyList = mutableStateListOf<String>()
     var owner by mutableStateOf(UserModel())
+
+    var inventoryNumberError = ""
+        private set
 
     init {
         val args = savedStateHandle.toRoute<PCDestination>()
@@ -49,10 +53,10 @@ class PCViewModel @Inject constructor(
             familyList.add("")
             userRepository.userList().collect { list ->
                 users = list.sortedWith(
-                        compareByDescending<UserModel> { it.family }
-                            .thenBy { it.name }
-                            .thenBy { it.patronymic }
-                    )
+                    compareByDescending<UserModel> { it.family }
+                        .thenBy { it.name }
+                        .thenBy { it.patronymic }
+                )
                 users.forEach { user ->
                     if (user.id.toInt() == pc.userId)
                         owner = user
@@ -68,7 +72,9 @@ class PCViewModel @Inject constructor(
         when (event) {
             is PCEvent.OnPCInventoryNumberChange -> {
                 pc = pc.copy(inventoryNumber = event.inventoryNumber)
+                inventoryNumberError = checkIsFieldEmpty(event.inventoryNumber)
             }
+
             is PCEvent.OnPCUserChange -> {
                 val id: Int?
                 if (event.user.isEmpty()) {
@@ -80,6 +86,7 @@ class PCViewModel @Inject constructor(
                 }
                 pc = pc.copy(userId = id)
             }
+
             is PCEvent.OnPCSave -> {
                 if (pc.userId == 0)
                     pc = pc.copy(userId = null)
