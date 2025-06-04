@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.pclist.R
@@ -101,6 +103,9 @@ fun UserScreen(
                             label = stringResource(R.string.service_number),
                             value = viewModel.user.serviceNumber,
                             height = 40.dp,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                            ),
                             onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
                             error = viewModel.serviceNumberError,
                             modifier = Modifier
@@ -111,6 +116,9 @@ fun UserScreen(
                             label = stringResource(R.string.phone),
                             value = viewModel.user.phone,
                             height = 40.dp,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                            ),
                             onChange = { value -> viewModel.onEvent(UserEvent.OnUserPhoneChange(value)) },
                             error = viewModel.phoneError,
                             modifier = Modifier
