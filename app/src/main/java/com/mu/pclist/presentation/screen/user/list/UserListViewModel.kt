@@ -21,7 +21,9 @@ class UserListViewModel @Inject constructor(
 ) : ViewModel() {
     //var users = userRepository.userList()
     var users by mutableStateOf(emptyList<UserModel>())
+    var foundUsers by mutableStateOf(emptyList<UserModel>())
     var sortBy by mutableStateOf(BY_FAMILY)
+    var search by mutableStateOf("")
 
     init {
         viewModelScope.launch {
@@ -31,12 +33,65 @@ class UserListViewModel @Inject constructor(
                         .thenBy { it.name }
                         .thenBy { it.patronymic }
                 )
+                foundUsers = users
             }
         }
     }
 
     fun onEvent(event: UserListEvent) {
         when (event) {
+            is UserListEvent.OnUserListSortByChange -> {
+                search = ""
+                foundUsers = users
+
+                sortBy = event.sortBy
+                when (sortBy) {
+                    BY_SERVICE_NUMBER -> {
+                        foundUsers.sortedBy { it.serviceNumber }
+                    }
+                    BY_OFFICES -> {
+                        foundUsers.sortedWith(
+                            compareByDescending<UserModel> { it.office }
+                                .thenBy { it.family }
+                                .thenBy { it.name }
+                                .thenBy { it.patronymic }
+                        )
+                    }
+                    else -> {
+                        foundUsers.sortedWith(
+                            compareByDescending<UserModel> { it.family }
+                                .thenBy { it.name }
+                                .thenBy { it.patronymic }
+                        )
+                    }
+                }
+            }
+
+            is UserListEvent.OnUserListSearchChange -> {
+                search = event.search
+                if (search.isBlank()) {
+                    foundUsers = users
+                } else {
+                    foundUsers = when (sortBy) {
+                        BY_SERVICE_NUMBER -> {
+                            users.filter { it.serviceNumber.contains(search, ignoreCase = true) }
+                        }
+
+                        BY_OFFICES -> {
+                            users.filter { it.office.contains(search, ignoreCase = true) }
+                        }
+
+                        else -> {
+                            users.filter {
+                                it.family.contains(search, ignoreCase = true)
+                                        || it.name.contains(search, ignoreCase = true)
+                                        || it.patronymic.contains(search, ignoreCase = true)
+                            }
+                        }
+                    }
+                }
+            }
+
             is UserListEvent.OnUserListDelete -> {
                 viewModelScope.launch {
                     userRepository.deleteUser(
@@ -52,24 +107,6 @@ class UserListViewModel @Inject constructor(
                 }
             }
 
-            is UserListEvent.OnUserListSortByChange -> {
-                sortBy = event.sortBy
-                when (sortBy) {
-                    BY_SERVICE_NUMBER -> {
-                        users.sortedBy { it.serviceNumber }
-                    }
-                    BY_OFFICES -> {
-                        users.sortedBy { it.office }
-                    }
-                    else -> {
-                        users.sortedWith(
-                            compareByDescending<UserModel> { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                    }
-                }
-            }
         }
     }
 }
