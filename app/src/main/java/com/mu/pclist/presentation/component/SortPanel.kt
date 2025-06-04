@@ -23,7 +23,11 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SortPanel() {
+fun SortPanel(
+    sortList: List<String>,
+    currentValue: String,
+    onChange: (String) -> Unit
+) {
     var heightCard by remember { mutableIntStateOf(0) }
 
     Box {
@@ -63,9 +67,9 @@ fun SortPanel() {
                     )
             ) {
                 RadioGroup(
-                    items = listOf("фамилии", "таб.№", "отделам"),
-                    currentValue = "фамилии",
-                    onClick = { newValue ->  }
+                    items = sortList,
+                    currentValue = currentValue,
+                    onClick = { newValue -> onChange(newValue) }
                 )
                 /*Text(
                     text = "фамилии",
