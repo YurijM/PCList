@@ -8,7 +8,7 @@ const val YEAR_START = 2025
 const val NEW_ID = 0L
 
 const val BY_FAMILY = "фамилии"
-const val BY_SERVICE_NUMBER = "таб.№"
+const val BY_SERVICE_NUMBER = "таб.номеру"
 const val BY_OFFICES = "отделам"
 
 const val FIELD_CAN_NOT_BE_EMPTY = "Поле не может быть пустым"

@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -76,7 +75,8 @@ fun UserListItemScreen(
                     .padding(horizontal = 4.dp)
             ) {
                 Text(
-                    text = "${user.family} ${user.name} ${user.patronymic}",
+                    text = "${user.family} ${user.name} ${user.patronymic} " +
+                            if (user.officeId > 0) "(${user.office})" else "",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -91,13 +91,6 @@ fun UserListItemScreen(
                     Text(
                         text = "ПК инв. № ${user.inventoryNumber}",
                         lineHeight = 1.em
-                    )
-                }
-                if (user.officeId > 0) {
-                    Text(
-                        text = "отдел ${user.office}",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontStyle = FontStyle.Italic,
                     )
                 }
             }

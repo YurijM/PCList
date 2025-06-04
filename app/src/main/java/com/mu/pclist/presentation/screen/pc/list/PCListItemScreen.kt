@@ -83,7 +83,8 @@ fun PCListItemScreen(
                 )
                 if (pc.userId > 0) {
                     Text(
-                        text = "${pc.family} ${pc.name} ${pc.patronymic}",
+                        text = "${pc.family} ${pc.name} ${pc.patronymic} " +
+                                if (pc.officeId > 0) "(${pc.office})" else "",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.titleSmall,
@@ -92,14 +93,6 @@ fun PCListItemScreen(
                     )
                     Text(
                         text = "таб. № ${pc.serviceNumber}, тел. ${pc.phone}",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontStyle = FontStyle.Italic,
-                        lineHeight = 1.em
-                    )
-                }
-                if (pc.officeId > 0) {
-                    Text(
-                        text = "отдел ${pc.office}",
                         style = MaterialTheme.typography.titleSmall,
                         fontStyle = FontStyle.Italic,
                         lineHeight = 1.em
