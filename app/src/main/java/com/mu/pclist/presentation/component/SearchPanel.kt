@@ -50,7 +50,7 @@ fun SearchPanel(
             )
         },
         singleLine = true,
-        leadingIcon = {
+        /*leadingIcon = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -68,16 +68,33 @@ fun SearchPanel(
                         .padding(end = 8.dp)
                 )
             }
-        },
+        },*/
         trailingIcon = {
-            IconButton(
-                onClick = onClear
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                IconButton(
+                    onClick = onClear,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                VerticalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.outlined_field_height))
+                        //.padding(end = 8.dp)
+                )
                 Icon(
-                    imageVector = Icons.Default.Clear,
+                    imageVector = Icons.Default.Search,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         },
