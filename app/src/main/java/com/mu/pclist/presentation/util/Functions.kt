@@ -1,6 +1,8 @@
 package com.mu.pclist.presentation.util
 
+import android.content.Context
 import android.util.Log
+import android.util.TypedValue
 
 fun toLog(message: String) {
     Log.d(DEBUG_TAG, message)
@@ -11,3 +13,5 @@ fun checkIsFieldEmpty(value: String?): String {
     else ""
 }
 
+fun Int.toDp(context: Context): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics).toInt()
