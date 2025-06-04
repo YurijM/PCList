@@ -59,7 +59,7 @@ fun PCListScreen(
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Title(stringResource(R.string.pc_list))
+                    Title(stringResource(R.string.computers))
                     HorizontalDivider(
                         thickness = 1.dp,
                         color = MaterialTheme.colorScheme.primary,
