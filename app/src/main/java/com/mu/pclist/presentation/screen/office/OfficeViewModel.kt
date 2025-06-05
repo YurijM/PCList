@@ -46,16 +46,6 @@ class OfficeViewModel @Inject constructor(
         val args = savedStateHandle.toRoute<OfficeDestination>()
         id = args.id
 
-        if (id != NEW_ID) {
-            newOffice = false
-
-            viewModelScope.launch {
-                officeRepository.office(id).collect { item ->
-                    office = item
-                    enabled = checkValue()
-                }
-            }
-        }
         viewModelScope.launch {
             familyList.add("")
             userRepository.userList().collect { list ->
@@ -66,11 +56,21 @@ class OfficeViewModel @Inject constructor(
                             .thenBy { it.patronymic }
                     )
                 users.forEach { user ->
-                    if (user.id.toInt() == office.userId)
-                        chief = user
                     familyList.add(
                         "${user.family} ${user.name} ${user.patronymic}"
                     )
+                }
+
+                if (id != NEW_ID) {
+                    newOffice = false
+                    officeRepository.office(id).collect { item ->
+                        office = item
+                        enabled = checkValue()
+
+                        chief = users.find { it.id.toInt() == office.userId } ?: UserModel()
+                    }
+                } else {
+                    enabled = checkValue()
                 }
             }
         }
