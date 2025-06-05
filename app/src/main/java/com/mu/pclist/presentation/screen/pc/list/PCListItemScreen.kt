@@ -83,8 +83,8 @@ fun PCListItemScreen(
                 )
                 if (pc.userId > 0) {
                     Text(
-                        text = "${pc.family} ${pc.name} ${pc.patronymic} " +
-                                if (pc.officeId > 0) "(${pc.office})" else "",
+                        text = (if (pc.officeId > 0) "${pc.office}, " else "") +
+                                "${pc.family} ${pc.name} ${pc.patronymic} ",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.titleSmall,

@@ -46,23 +46,21 @@ class PCViewModel @Inject constructor(
             viewModelScope.launch {
                 pcRepository.pc(id).collect { item ->
                     pc = item
-                }
-            }
-        }
-        viewModelScope.launch {
-            familyList.add("")
-            userRepository.userList().collect { list ->
-                users = list.sortedWith(
-                    compareByDescending<UserModel> { it.family }
-                        .thenBy { it.name }
-                        .thenBy { it.patronymic }
-                )
-                users.forEach { user ->
-                    if (user.id.toInt() == pc.userId)
-                        owner = user
-                    familyList.add(
-                        "${user.family} ${user.name} ${user.patronymic}"
-                    )
+
+                    familyList.add("")
+                    userRepository.userList().collect { list ->
+                        users = list.sortedWith(
+                            compareByDescending<UserModel> { it.family }
+                                .thenBy { it.name }
+                                .thenBy { it.patronymic }
+                        )
+                        users.forEach { user ->
+                            familyList.add(
+                                "${user.family} ${user.name} ${user.patronymic}"
+                            )
+                        }
+                        owner = users.find { it.id.toInt() == pc.userId} ?: UserModel()
+                    }
                 }
             }
         }
