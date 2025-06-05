@@ -35,9 +35,13 @@ class UserViewModel @Inject constructor(
     private var offices = emptyList<OfficeModel>()
     private var computers = emptyList<PCModel>()
     var officeList = mutableStateListOf<String>()
+        private set
     var office by mutableStateOf(OfficeModel())
+        private set
     var pcList = mutableStateListOf<String>()
+        private set
     var pc by mutableStateOf(PCModel())
+        private set
 
     var familyError = ""
         private set
@@ -63,28 +67,25 @@ class UserViewModel @Inject constructor(
                 userRepository.user(id).collect { item ->
                     user = item
                     enabled = checkValue()
-                }
-            }
-        }
-        viewModelScope.launch {
-            officeList.add("")
-            officeRepository.officeList().collect { list ->
-                offices = list.sortedBy { it.shortName }
-                offices.forEach { item ->
-                    if (item.id.toInt() == user.officeId)
-                        office = item
-                    officeList.add(item.shortName)
-                }
-            }
-        }
-        viewModelScope.launch {
-            pcList.add("")
-            pcRepository.pcList().collect { list ->
-                computers = list.sortedBy { it.inventoryNumber }
-                computers.forEach { item ->
-                    if (item.id.toInt() == user.pcId)
-                        pc = item
-                    pcList.add(item.inventoryNumber)
+
+                    officeList.add("")
+                    officeRepository.officeList().collect { list ->
+                        offices = list.sortedBy { it.shortName }
+                        offices.forEach { item ->
+                            officeList.add(item.shortName)
+                        }
+
+                        pcList.add("")
+                        pcRepository.pcList().collect { list ->
+                            computers = list.sortedBy { it.inventoryNumber }
+                            computers.forEach { item ->
+                                pcList.add(item.inventoryNumber)
+                            }
+
+                            office = offices.find { it.id.toInt() == user.officeId } ?: OfficeModel()
+                            pc = computers.find { it.id.toInt() == user.pcId } ?: PCModel()
+                        }
+                    }
                 }
             }
         }

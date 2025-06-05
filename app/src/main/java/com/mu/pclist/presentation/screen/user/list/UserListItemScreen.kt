@@ -75,8 +75,7 @@ fun UserListItemScreen(
                     .padding(horizontal = 4.dp)
             ) {
                 Text(
-                    text = "${user.family} ${user.name} ${user.patronymic} " +
-                            if (user.officeId > 0) "(${user.office})" else "",
+                    text = "${user.family} ${user.name} ${user.patronymic}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -87,9 +86,15 @@ fun UserListItemScreen(
                     text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
                     lineHeight = 1.em
                 )
+                var additional = if (user.officeId > 0) user.office else ""
                 if (user.inventoryNumber.isNotEmpty()) {
+                    if (additional.isNotBlank())
+                        additional += ", "
+                    additional += "ПК инв. № ${user.inventoryNumber}"
+                }
+                if (additional.isNotBlank()) {
                     Text(
-                        text = "ПК инв. № ${user.inventoryNumber}",
+                        text = additional,
                         lineHeight = 1.em
                     )
                 }
