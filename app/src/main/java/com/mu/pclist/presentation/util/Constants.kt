@@ -9,9 +9,14 @@ const val NEW_ID = 0L
 
 const val BY_FAMILY = "фамилии"
 const val BY_SERVICE_NUMBER = "таб.номеру"
+const val BY_INVENTORY_NUMBER = "инв.номеру"
 const val BY_OFFICES = "отделам"
 
 const val FIELD_CAN_NOT_BE_EMPTY = "Поле не может быть пустым"
+const val OFFICE_LIST_IS_EMPTY = "Пользователи не заведены"
+const val PC_LIST_IS_EMPTY = "Пользователи не заведены"
+const val USER_LIST_IS_EMPTY = "Пользователи не заведены"
+const val FOUND_NOTHING = "Ничего не найдено"
 
 sealed class BottomNavItem(
     val titleId: Int,

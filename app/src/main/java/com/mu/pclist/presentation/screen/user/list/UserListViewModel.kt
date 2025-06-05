@@ -11,6 +11,8 @@ import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
+import com.mu.pclist.presentation.util.FOUND_NOTHING
+import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +26,7 @@ class UserListViewModel @Inject constructor(
     var foundUsers by mutableStateOf(emptyList<UserModel>())
     var sortBy by mutableStateOf(BY_FAMILY)
     var search by mutableStateOf("")
+    var searchResult = USER_LIST_IS_EMPTY
 
     init {
         viewModelScope.launch {
@@ -71,7 +74,9 @@ class UserListViewModel @Inject constructor(
                 search = event.search
                 if (search.isBlank()) {
                     foundUsers = users
+                    searchResult = USER_LIST_IS_EMPTY
                 } else {
+                    searchResult = FOUND_NOTHING
                     foundUsers = when (sortBy) {
                         BY_SERVICE_NUMBER -> {
                             users.filter { it.serviceNumber.contains(search, ignoreCase = true) }

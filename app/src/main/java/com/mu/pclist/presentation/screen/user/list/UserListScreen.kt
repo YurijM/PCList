@@ -71,8 +71,8 @@ fun UserListScreen(
         }
         if (viewModel.foundUsers.isEmpty()) {
             Title(
-                title = "Пользователи не заведены",
-                padding = PaddingValues(top = 80.dp)
+                title = viewModel.searchResult,
+                padding = PaddingValues(top = 60.dp)
             )
         } else {
             LazyColumn(
