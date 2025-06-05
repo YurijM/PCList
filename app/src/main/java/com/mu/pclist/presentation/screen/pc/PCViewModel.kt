@@ -44,7 +44,7 @@ class PCViewModel @Inject constructor(
             familyList.add("")
             userRepository.userList().collect { list ->
                 users = list.sortedWith(
-                    compareByDescending<UserModel> { it.family }
+                    compareBy<UserModel> { it.family }
                         .thenBy { it.name }
                         .thenBy { it.patronymic }
                 )

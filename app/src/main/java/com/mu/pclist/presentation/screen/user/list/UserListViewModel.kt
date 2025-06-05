@@ -32,7 +32,7 @@ class UserListViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.userList().collect { list ->
                 users = list.sortedWith(
-                    compareByDescending<UserModel> { it.family }
+                    compareBy<UserModel> { it.family }
                         .thenBy { it.name }
                         .thenBy { it.patronymic }
                 )
@@ -48,13 +48,13 @@ class UserListViewModel @Inject constructor(
                 foundUsers = users
 
                 sortBy = event.sortBy
-                when (sortBy) {
+                foundUsers = when (sortBy) {
                     BY_SERVICE_NUMBER -> {
                         foundUsers.sortedBy { it.serviceNumber }
                     }
                     BY_OFFICES -> {
                         foundUsers.sortedWith(
-                            compareByDescending<UserModel> { it.office }
+                            compareBy<UserModel> { it.office }
                                 .thenBy { it.family }
                                 .thenBy { it.name }
                                 .thenBy { it.patronymic }
@@ -62,7 +62,7 @@ class UserListViewModel @Inject constructor(
                     }
                     else -> {
                         foundUsers.sortedWith(
-                            compareByDescending<UserModel> { it.family }
+                            compareBy<UserModel> { it.family }
                                 .thenBy { it.name }
                                 .thenBy { it.patronymic }
                         )

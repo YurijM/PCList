@@ -61,7 +61,7 @@ class OfficeViewModel @Inject constructor(
             userRepository.userList().collect { list ->
                 users = list.filter { it.officeId == id }
                     .sortedWith(
-                        compareByDescending<UserModel> { it.family }
+                        compareBy<UserModel> { it.family }
                             .thenBy { it.name }
                             .thenBy { it.patronymic }
                     )

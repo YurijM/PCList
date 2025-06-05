@@ -43,10 +43,10 @@ class PCListViewModel @Inject constructor(
                 foundComputers = computers
 
                 sortBy = event.sortBy
-                when (sortBy) {
+                foundComputers = when (sortBy) {
                     BY_FAMILY -> {
                         foundComputers.sortedWith(
-                            compareByDescending<PCModel> { it.family }
+                            compareBy<PCModel> { it.family }
                                 .thenBy { it.name }
                                 .thenBy { it.patronymic }
                         )
@@ -54,7 +54,7 @@ class PCListViewModel @Inject constructor(
 
                     BY_OFFICES -> {
                         foundComputers.sortedWith(
-                            compareByDescending<PCModel> { it.office }
+                            compareBy<PCModel> { it.office }
                                 .thenBy { it.inventoryNumber }
                         )
                     }
