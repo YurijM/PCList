@@ -60,31 +60,32 @@ class UserViewModel @Inject constructor(
         val args = savedStateHandle.toRoute<UserDestination>()
         id = args.id
 
-        if (id != NEW_ID) {
-            newUser = false
+        viewModelScope.launch {
+            officeList.add("")
+            officeRepository.officeList().collect { list ->
+                offices = list.sortedBy { it.shortName }
+                offices.forEach { item ->
+                    officeList.add(item.shortName)
+                }
 
-            viewModelScope.launch {
-                userRepository.user(id).collect { item ->
-                    user = item
-                    enabled = checkValue()
+                pcList.add("")
+                pcRepository.pcList().collect { list ->
+                    computers = list.sortedBy { it.inventoryNumber }
+                    computers.forEach { item ->
+                        pcList.add(item.inventoryNumber)
+                    }
 
-                    officeList.add("")
-                    officeRepository.officeList().collect { list ->
-                        offices = list.sortedBy { it.shortName }
-                        offices.forEach { item ->
-                            officeList.add(item.shortName)
-                        }
-
-                        pcList.add("")
-                        pcRepository.pcList().collect { list ->
-                            computers = list.sortedBy { it.inventoryNumber }
-                            computers.forEach { item ->
-                                pcList.add(item.inventoryNumber)
-                            }
+                    if (id != NEW_ID) {
+                        newUser = false
+                        userRepository.user(id).collect { item ->
+                            user = item
+                            enabled = checkValue()
 
                             office = offices.find { it.id.toInt() == user.officeId } ?: OfficeModel()
                             pc = computers.find { it.id.toInt() == user.pcId } ?: PCModel()
                         }
+                    } else {
+                        enabled = checkValue()
                     }
                 }
             }
