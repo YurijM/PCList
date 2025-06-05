@@ -13,8 +13,8 @@ const val BY_INVENTORY_NUMBER = "инв.номеру"
 const val BY_OFFICES = "отделам"
 
 const val FIELD_CAN_NOT_BE_EMPTY = "Поле не может быть пустым"
-const val OFFICE_LIST_IS_EMPTY = "Пользователи не заведены"
-const val PC_LIST_IS_EMPTY = "Пользователи не заведены"
+const val OFFICE_LIST_IS_EMPTY = "Отделы не заведены"
+const val PC_LIST_IS_EMPTY = "Компьютеры не заведены"
 const val USER_LIST_IS_EMPTY = "Пользователи не заведены"
 const val FOUND_NOTHING = "Ничего не найдено"
 

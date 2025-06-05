@@ -27,6 +27,7 @@ import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.Title
 import com.mu.pclist.presentation.navigation.Destinations.OfficeDestination
 import com.mu.pclist.presentation.util.NEW_ID
+import com.mu.pclist.presentation.util.OFFICE_LIST_IS_EMPTY
 
 @Composable
 fun OfficeListScreen(
@@ -46,26 +47,26 @@ fun OfficeListScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            Card(
+                shape = RoundedCornerShape(0.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Title(stringResource(R.string.offices))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
             if (offices!!.isEmpty()) {
                 Title(
-                    title = "Отделы не заведены",
-                    padding = PaddingValues(top = 80.dp)
+                    title = OFFICE_LIST_IS_EMPTY,
+                    padding = PaddingValues(top = 60.dp)
                 )
             } else {
-                Card(
-                    shape = RoundedCornerShape(0.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Title(stringResource(R.string.offices))
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
