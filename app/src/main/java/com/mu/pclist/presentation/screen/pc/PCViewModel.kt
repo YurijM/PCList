@@ -40,25 +40,25 @@ class PCViewModel @Inject constructor(
         val args = savedStateHandle.toRoute<PCDestination>()
         id = args.id
 
-        if (id != NEW_ID) {
-            newPC = false
+        viewModelScope.launch {
+            familyList.add("")
+            userRepository.userList().collect { list ->
+                users = list.sortedWith(
+                    compareByDescending<UserModel> { it.family }
+                        .thenBy { it.name }
+                        .thenBy { it.patronymic }
+                )
+                users.forEach { user ->
+                    familyList.add(
+                        "${user.family} ${user.name} ${user.patronymic}"
+                    )
+                }
 
-            viewModelScope.launch {
-                pcRepository.pc(id).collect { item ->
-                    pc = item
+                if (id != NEW_ID) {
+                    newPC = false
+                    pcRepository.pc(id).collect { item ->
+                        pc = item
 
-                    familyList.add("")
-                    userRepository.userList().collect { list ->
-                        users = list.sortedWith(
-                            compareByDescending<UserModel> { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                        users.forEach { user ->
-                            familyList.add(
-                                "${user.family} ${user.name} ${user.patronymic}"
-                            )
-                        }
                         owner = users.find { it.id.toInt() == pc.userId} ?: UserModel()
                     }
                 }
