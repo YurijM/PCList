@@ -44,7 +44,7 @@ fun PCListScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Title(stringResource(R.string.computers))
+            Title("${stringResource(R.string.computers)} (${viewModel.computers.size})")
             SortPanel(
                 sortList = listOf(BY_INVENTORY_NUMBER, BY_FAMILY, BY_OFFICES),
                 currentValue = viewModel.sortBy,
