@@ -59,7 +59,7 @@ fun PCScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Title(
-                        title = stringResource(R.string.office),
+                        title = stringResource(R.string.computer),
                         padding = PaddingValues(top = 4.dp)
                     )
                     HorizontalDivider(
