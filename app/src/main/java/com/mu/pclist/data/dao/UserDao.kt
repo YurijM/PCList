@@ -27,15 +27,9 @@ interface UserDao {
             "WHERE user_id = :userId")
     suspend fun setOfficeUserNull(userId: Long)
 
-    @Query("UPDATE table_pc " +
-            "SET user_id = NULL " +
-            "WHERE user_id = :userId")
-    suspend fun setPCUserNull(userId: Long)
-
     @Transaction
     suspend fun deleteUser(user: UserEntity) {
         setOfficeUserNull(user.id)
-        setPCUserNull(user.id)
         delete(user)
     }
 

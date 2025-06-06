@@ -120,7 +120,7 @@ fun PCListItemScreen(
     }
     if (openDialog) {
         DialogText(
-            text = "Вы действительно хотите удалить компьютер с табельным номером \"${pc.inventoryNumber}\" ?",
+            text = "Вы действительно хотите удалить компьютер с инвентарным номером \"${pc.inventoryNumber}\" ?",
             showCancel = true,
             onDismiss = {},
             titleOK = stringResource(R.string.yes),

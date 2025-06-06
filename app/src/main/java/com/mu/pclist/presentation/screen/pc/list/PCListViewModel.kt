@@ -94,11 +94,10 @@ class PCListViewModel @Inject constructor(
 
             is PCListEvent.OnPCListDelete -> {
                 viewModelScope.launch {
-                    pcRepository.delete(
+                    pcRepository.deletePC(
                         PCEntity(
                             id = event.pc.id,
                             inventoryNumber = event.pc.inventoryNumber,
-                            userId = event.pc.userId.toInt()
                         )
                     )
                 }

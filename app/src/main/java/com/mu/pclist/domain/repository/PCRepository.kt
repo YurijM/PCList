@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface PCRepository {
     suspend fun insert(pc: PCEntity): Long
     suspend fun update(pc: PCEntity): Int
-    suspend fun delete(pc: PCEntity)
+    suspend fun deletePC(pc: PCEntity)
     fun pcList(): Flow<List<PCModel>>
     fun pc(id: Long): Flow<PCEntity>
 }
