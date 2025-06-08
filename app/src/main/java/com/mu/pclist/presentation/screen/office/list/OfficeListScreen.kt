@@ -54,7 +54,8 @@ fun OfficeListScreen(
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Title("${stringResource(R.string.offices)} (${offices!!.size})")
+                Title(stringResource(R.string.offices) +
+                        if (offices!!.isNotEmpty()) " (${offices!!.size})" else "")
                 HorizontalDivider(
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.primary,

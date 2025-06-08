@@ -44,7 +44,8 @@ fun UserListScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Title("${stringResource(R.string.users)} (${viewModel.users.size})")
+            Title(stringResource(R.string.users) +
+                    if (viewModel.users.isNotEmpty()) " (${viewModel.users.size})" else "")
             SortPanel(
                 sortList = listOf(BY_FAMILY, BY_SERVICE_NUMBER, BY_OFFICES),
                 currentValue = viewModel.sortBy,
