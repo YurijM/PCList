@@ -11,8 +11,10 @@ import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.BY_OFFICES
+import com.mu.pclist.presentation.util.COMPUTERS
 import com.mu.pclist.presentation.util.FOUND_NOTHING
 import com.mu.pclist.presentation.util.PC_LIST_IS_EMPTY
+import com.mu.pclist.presentation.util.setTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,12 +28,15 @@ class PCListViewModel @Inject constructor(
     var sortBy by mutableStateOf(BY_INVENTORY_NUMBER)
     var search by mutableStateOf("")
     var searchResult = PC_LIST_IS_EMPTY
+    var title = ""
+        private set
 
     init {
         viewModelScope.launch {
             pcRepository.pcList().collect { list ->
                 computers = list.sortedBy { it.inventoryNumber }
                 foundComputers = computers
+                title = setTitle(COMPUTERS, foundComputers.size, computers.size)
             }
         }
     }
@@ -41,6 +46,7 @@ class PCListViewModel @Inject constructor(
             is PCListEvent.OnPCListSortByChange -> {
                 search = ""
                 foundComputers = computers
+                title = setTitle(COMPUTERS, foundComputers.size, computers.size)
 
                 sortBy = event.sortBy
                 foundComputers = when (sortBy) {
@@ -90,6 +96,7 @@ class PCListViewModel @Inject constructor(
                         }
                     }
                 }
+                title = setTitle(COMPUTERS, foundComputers.size, computers.size)
             }
 
             is PCListEvent.OnPCListDelete -> {
@@ -100,6 +107,7 @@ class PCListViewModel @Inject constructor(
                             inventoryNumber = event.pc.inventoryNumber,
                         )
                     )
+                    title = setTitle(COMPUTERS, foundComputers.size, computers.size)
                 }
             }
         }

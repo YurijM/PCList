@@ -12,7 +12,9 @@ import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
 import com.mu.pclist.presentation.util.FOUND_NOTHING
+import com.mu.pclist.presentation.util.USERS
 import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
+import com.mu.pclist.presentation.util.setTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +29,8 @@ class UserListViewModel @Inject constructor(
     var sortBy by mutableStateOf(BY_FAMILY)
     var search by mutableStateOf("")
     var searchResult = USER_LIST_IS_EMPTY
+    var title = ""
+        private set
 
     init {
         viewModelScope.launch {
@@ -37,6 +41,7 @@ class UserListViewModel @Inject constructor(
                         .thenBy { it.patronymic }
                 )
                 foundUsers = users
+                title = setTitle(USERS, foundUsers.size, users.size)
             }
         }
     }
@@ -46,12 +51,14 @@ class UserListViewModel @Inject constructor(
             is UserListEvent.OnUserListSortByChange -> {
                 search = ""
                 foundUsers = users
+                title = setTitle(USERS, foundUsers.size, users.size)
 
                 sortBy = event.sortBy
                 foundUsers = when (sortBy) {
                     BY_SERVICE_NUMBER -> {
                         foundUsers.sortedBy { it.serviceNumber }
                     }
+
                     BY_OFFICES -> {
                         foundUsers.sortedWith(
                             compareBy<UserModel> { it.office }
@@ -60,6 +67,7 @@ class UserListViewModel @Inject constructor(
                                 .thenBy { it.patronymic }
                         )
                     }
+
                     else -> {
                         foundUsers.sortedWith(
                             compareBy<UserModel> { it.family }
@@ -95,6 +103,7 @@ class UserListViewModel @Inject constructor(
                         }
                     }
                 }
+                title = setTitle(USERS, foundUsers.size, users.size)
             }
 
             is UserListEvent.OnUserListDelete -> {
@@ -109,9 +118,9 @@ class UserListViewModel @Inject constructor(
                             officeId = event.user.officeId.toInt()
                         )
                     )
+                    title = setTitle(USERS, foundUsers.size, users.size)
                 }
             }
-
         }
     }
 }

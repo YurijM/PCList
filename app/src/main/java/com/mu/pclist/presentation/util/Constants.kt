@@ -7,6 +7,9 @@ const val DEBUG_TAG = "pclist"
 const val YEAR_START = 2025
 const val NEW_ID = 0L
 
+const val USERS = "Пользователи"
+const val COMPUTERS = "Компьютеры"
+
 const val BY_FAMILY = "фамилии"
 const val BY_SERVICE_NUMBER = "таб.номеру"
 const val BY_INVENTORY_NUMBER = "инв.номеру"

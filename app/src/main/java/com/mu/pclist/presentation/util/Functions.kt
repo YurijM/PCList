@@ -15,3 +15,13 @@ fun checkIsFieldEmpty(value: String?): String {
 
 fun Int.toDp(context: Context): Int =
     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics).toInt()
+
+fun setTitle(title: String, foundSize: Int, size: Int): String =
+    title +
+            if (size > 0) {
+                " (" + if (foundSize > 0 && foundSize < size) {
+                    "$foundSize из "
+                } else {
+                    ""
+                } + "$size)"
+            } else ""

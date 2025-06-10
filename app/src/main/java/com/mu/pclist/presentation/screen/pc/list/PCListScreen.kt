@@ -15,10 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mu.pclist.R
 import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.SearchPanel
 import com.mu.pclist.presentation.component.SortPanel
@@ -44,8 +42,7 @@ fun PCListScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Title(stringResource(R.string.computers) +
-                    if (viewModel.computers.isNotEmpty()) " (${viewModel.computers.size})" else "")
+            Title(viewModel.title)
             SortPanel(
                 sortList = listOf(BY_INVENTORY_NUMBER, BY_FAMILY, BY_OFFICES),
                 currentValue = viewModel.sortBy,
