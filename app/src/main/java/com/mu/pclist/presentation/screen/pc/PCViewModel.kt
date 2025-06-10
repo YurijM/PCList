@@ -47,11 +47,13 @@ class PCViewModel @Inject constructor(
         when (event) {
             is PCEvent.OnPCInventoryNumberChange -> {
                 pc = pc.copy(inventoryNumber = event.inventoryNumber)
-                inventoryNumberError = checkIsFieldEmpty(event.inventoryNumber)
+                inventoryNumberError = checkIsFieldEmpty(event.inventoryNumber.trim())
             }
 
             is PCEvent.OnPCSave -> {
                 viewModelScope.launch {
+                    pc = pc.copy(inventoryNumber = pc.inventoryNumber.trim())
+
                     if (newPC)
                         pcRepository.insert(pc)
                     else

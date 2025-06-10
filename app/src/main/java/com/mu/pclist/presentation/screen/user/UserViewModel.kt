@@ -96,31 +96,31 @@ class UserViewModel @Inject constructor(
         when (event) {
             is UserEvent.OnUserFamilyChange -> {
                 user = user.copy(family = event.family)
-                familyError = checkIsFieldEmpty(event.family)
+                familyError = checkIsFieldEmpty(event.family.trim())
                 enabled = checkValue()
             }
 
             is UserEvent.OnUserNameChange -> {
                 user = user.copy(name = event.name)
-                nameError = checkIsFieldEmpty(event.name)
+                nameError = checkIsFieldEmpty(event.name.trim())
                 enabled = checkValue()
             }
 
             is UserEvent.OnUserPatronymicChange -> {
                 user = user.copy(patronymic = event.patronymic)
-                patronymicError = checkIsFieldEmpty(event.patronymic)
+                patronymicError = checkIsFieldEmpty(event.patronymic.trim())
                 enabled = checkValue()
             }
 
             is UserEvent.OnUserServiceNumberChange -> {
                 user = user.copy(serviceNumber = event.serviceNumber)
-                serviceNumberError = checkIsFieldEmpty(event.serviceNumber)
+                serviceNumberError = checkIsFieldEmpty(event.serviceNumber.trim())
                 enabled = checkValue()
             }
 
             is UserEvent.OnUserPhoneChange -> {
                 user = user.copy(phone = event.phone)
-                phoneError = checkIsFieldEmpty(event.phone)
+                phoneError = checkIsFieldEmpty(event.phone.trim())
                 enabled = checkValue()
             }
 
@@ -151,6 +151,14 @@ class UserViewModel @Inject constructor(
             is UserEvent.OnUserSave -> {
                 if (user.officeId == 0)
                     user = user.copy(officeId = null)
+
+                user = user.copy(
+                    family = user.family.trim(),
+                    name = user.name.trim(),
+                    patronymic = user.patronymic.trim(),
+                    serviceNumber = user.serviceNumber.trim(),
+                    phone = user.phone.trim(),
+                )
 
                 if (user.pcId == 0)
                     user = user.copy(pcId = null)

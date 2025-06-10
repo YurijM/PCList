@@ -80,19 +80,19 @@ class OfficeViewModel @Inject constructor(
         when (event) {
             is OfficeEvent.OnOfficeCodeChange -> {
                 office = office.copy(code = event.code)
-                codeError = checkIsFieldEmpty(event.code)
+                codeError = checkIsFieldEmpty(event.code.trim())
                 enabled = checkValue()
             }
 
             is OfficeEvent.OnOfficeShortNameChange -> {
                 office = office.copy(shortName = event.shortName)
-                shortNameError = checkIsFieldEmpty(event.shortName)
+                shortNameError = checkIsFieldEmpty(event.shortName.trim())
                 enabled = checkValue()
             }
 
             is OfficeEvent.OnOfficeOfficeChange -> {
                 office = office.copy(office = event.office)
-                officeError = checkIsFieldEmpty(event.office)
+                officeError = checkIsFieldEmpty(event.office.trim())
                 enabled = checkValue()
             }
 
@@ -111,6 +111,12 @@ class OfficeViewModel @Inject constructor(
             is OfficeEvent.OnOfficeSave -> {
                 if (office.userId == 0)
                     office = office.copy(userId = null)
+
+                office = office.copy(
+                    code = office.code.trim(),
+                    shortName = office.shortName.trim(),
+                    office = office.office.trim(),
+                )
 
                 viewModelScope.launch {
                     if (newOffice)
