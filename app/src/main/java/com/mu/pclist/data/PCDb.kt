@@ -15,7 +15,7 @@ import com.mu.pclist.data.entity.UserEntity
         UserEntity::class,
         PCEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class PCDb : RoomDatabase() {

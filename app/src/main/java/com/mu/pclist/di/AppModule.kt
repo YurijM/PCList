@@ -3,6 +3,7 @@ package com.mu.pclist.di
 import android.app.Application
 import androidx.room.Room
 import com.mu.pclist.data.PCDb
+import com.mu.pclist.data.migration_1_2
 import com.mu.pclist.data.repository.OfficeRepositoryImpl
 import com.mu.pclist.data.repository.PCRepositoryImpl
 import com.mu.pclist.data.repository.UserRepositoryImpl
@@ -27,8 +28,7 @@ object AppModule {
             "db_pc"
         )
             .addMigrations(
-                //migration_1_2,
-                //migration_2_3
+                migration_1_2,
             )
             .build()
     }
