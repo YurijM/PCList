@@ -27,9 +27,15 @@ interface UserDao {
             "WHERE user_id = :userId")
     suspend fun setOfficeUserNull(userId: Long)
 
+    @Query("UPDATE table_pc " +
+            "SET user_id = NULL " +
+            "WHERE user_id = :userId")
+    suspend fun setPCUserNull(userId: Long)
+
     @Transaction
     suspend fun deleteUser(user: UserEntity) {
         setOfficeUserNull(user.id)
+        setPCUserNull(user.id)
         delete(user)
     }
 
@@ -38,7 +44,7 @@ interface UserDao {
             "IFNULL(p.id, 0) AS pcId, IFNULL(p.inventory_number, '') AS inventoryNumber " +
             "FROM table_users u " +
             "LEFT JOIN table_offices o ON o.id = u.office_id " +
-            "LEFT JOIN table_pc p ON p.id = u.pc_id " +
+            "LEFT JOIN table_pc p ON p.user_id = u.id " +
             "ORDER BY u.service_number")
     fun userList() : Flow<List<UserModel>>
 

@@ -17,8 +17,8 @@ class PCRepositoryImpl(
         return dao.update(pc)
     }
 
-    override suspend fun deletePC(pc: PCEntity) {
-        dao.deletePC(pc)
+    override suspend fun delete(pc: PCEntity) {
+        dao.delete(pc)
     }
 
     override fun pcList(): Flow<List<PCModel>> {

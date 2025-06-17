@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.pclist.R
+import com.mu.pclist.presentation.component.DropDownList
 import com.mu.pclist.presentation.component.OkAndCancel
 import com.mu.pclist.presentation.component.OutlinedTextEdit
 import com.mu.pclist.presentation.component.Title
@@ -78,6 +79,13 @@ fun PCScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                    )
+                    DropDownList(
+                        list = viewModel.familyList,
+                        label = stringResource(R.string.user),
+                        selectedItem = "${viewModel.user.family} ${viewModel.user.name} ${viewModel.user.patronymic}",
+                        onClick = { selectedItem -> viewModel.onEvent(PCEvent.OnPCUserChange(selectedItem)) },
+                        modifier = Modifier.fillMaxWidth()
                     )
                     HorizontalDivider(
                         thickness = 1.dp,

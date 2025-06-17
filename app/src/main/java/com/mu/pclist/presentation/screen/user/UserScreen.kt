@@ -133,15 +133,6 @@ fun UserScreen(
                         onClick = { selectedItem -> viewModel.onEvent(UserEvent.OnUserOfficeChange(selectedItem)) },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    DropDownList(
-                        list = viewModel.pcList,
-                        label = stringResource(R.string.computer),
-                        selectedItem = viewModel.pc.inventoryNumber,
-                        onClick = { selectedItem -> viewModel.onEvent(UserEvent.OnUserPCChange(selectedItem)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                    )
                     HorizontalDivider(
                         thickness = 1.dp,
                     )

@@ -20,3 +20,9 @@ val migration_1_2: Migration = object : Migration(1, 2) {
         db.execSQL("UPDATE table_pc SET user_id = (SELECT id FROM table_users WHERE pc_id = table_pc.id)")
     }
 }
+
+val migration_2_3: Migration = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE table_users DROP COLUMN pc_id")
+    }
+}
