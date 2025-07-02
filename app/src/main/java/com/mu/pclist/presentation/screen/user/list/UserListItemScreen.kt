@@ -86,8 +86,7 @@ fun UserListItemScreen(
                     text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
                     lineHeight = 1.em
                 )
-                var additional = if (user.officeId > 0) user.office else ""
-                if (user.inventoryNumber.isNotEmpty()) {
+                /*var additional = if (user.officeId > 0) user.office else ""
                     if (additional.isNotBlank())
                         additional += ", "
                     additional += "ПК инв. № ${user.inventoryNumber}"
@@ -95,6 +94,18 @@ fun UserListItemScreen(
                 if (additional.isNotBlank()) {
                     Text(
                         text = additional,
+                        lineHeight = 1.em
+                    )
+                }*/
+                if (user.officeId > 0) {
+                    Text(
+                        text = user.office,
+                        lineHeight = 1.em
+                    )
+                }
+                if (user.pcList.isNotEmpty()) {
+                    Text(
+                        text = "ПК инв.№: ${user.pcList}",
                         lineHeight = 1.em
                     )
                 }

@@ -41,10 +41,11 @@ interface UserDao {
 
     @Query("SELECT u.id, u.service_number AS serviceNumber, u.family, u.name, u.patronymic, u.phone, " +
             "IFNULL(o.id, 0) AS officeId, IFNULL(o.short_name, '') AS office, " +
-            "IFNULL(p.id, 0) AS pcId, IFNULL(p.inventory_number, '') AS inventoryNumber " +
+            "\"\" AS pcList " +
+            //"IFNULL(p.id, 0) AS pcId, IFNULL(p.inventory_number, '') AS inventoryNumber " +
             "FROM table_users u " +
             "LEFT JOIN table_offices o ON o.id = u.office_id " +
-            "LEFT JOIN table_pc p ON p.user_id = u.id " +
+            //"LEFT JOIN table_pc p ON p.user_id = u.id " +
             "ORDER BY u.service_number")
     fun userList() : Flow<List<UserModel>>
 

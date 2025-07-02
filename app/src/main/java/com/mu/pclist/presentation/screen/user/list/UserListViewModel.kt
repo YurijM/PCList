@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.pclist.data.entity.UserEntity
+import com.mu.pclist.domain.model.PCModel
 import com.mu.pclist.domain.model.UserModel
+import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_OFFICES
@@ -15,13 +17,15 @@ import com.mu.pclist.presentation.util.FOUND_NOTHING
 import com.mu.pclist.presentation.util.USERS
 import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
 import com.mu.pclist.presentation.util.setTitle
+import com.mu.pclist.presentation.util.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val pcRepository: PCRepository
 ) : ViewModel() {
     //var users = userRepository.userList()
     var users by mutableStateOf(emptyList<UserModel>())
@@ -29,6 +33,7 @@ class UserListViewModel @Inject constructor(
     var sortBy by mutableStateOf(BY_FAMILY)
     var search by mutableStateOf("")
     var searchResult = USER_LIST_IS_EMPTY
+    var computers by mutableStateOf(emptyList<PCModel>())
     var title = ""
         private set
 
@@ -40,10 +45,32 @@ class UserListViewModel @Inject constructor(
                         .thenBy { it.name }
                         .thenBy { it.patronymic }
                 )
-                foundUsers = users
-                title = setTitle(USERS, foundUsers.size, users.size)
+
+                pcRepository.pcList().collect { pcList ->
+                    computers = pcList.sortedBy { it.userId }
+
+                    users = setUserPCList(users)
+
+                    foundUsers = users
+                    title = setTitle(USERS, foundUsers.size, users.size)
+                }
             }
         }
+    }
+
+    private fun setUserPCList(users: List<UserModel>): List<UserModel> {
+        users.forEachIndexed { idx, user ->
+            val pcList = computers.filter { it.userId == user.id }
+            if (pcList.isNotEmpty()) {
+                var list = ""
+                pcList.forEach { pc ->
+                    list += (if (list.isNotEmpty()) ", " else "") + pc.inventoryNumber
+                }
+                //users[idx] = user.copy(pcList = list)
+                toLog("users[idx].pcList: ${users[idx].pcList}")
+            }
+        }
+        return users
     }
 
     fun onEvent(event: UserListEvent) {
@@ -102,6 +129,7 @@ class UserListViewModel @Inject constructor(
                             }
                         }
                     }
+                    foundUsers = setUserPCList(foundUsers)
                 }
                 title = setTitle(USERS, foundUsers.size, users.size)
             }

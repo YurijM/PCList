@@ -9,6 +9,7 @@ data class UserModel(
     val phone: String = "",
     val officeId: Long = 0,
     val office: String = "",
-    val pcId: Long = 0,
-    val inventoryNumber: String = "",
+    val pcList: String = "",
+    //val pcId: Long = 0,
+    //val inventoryNumber: String = "",
 )
