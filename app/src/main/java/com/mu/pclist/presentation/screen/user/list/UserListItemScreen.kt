@@ -26,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -86,26 +88,21 @@ fun UserListItemScreen(
                     text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
                     lineHeight = 1.em
                 )
-                /*var additional = if (user.officeId > 0) user.office else ""
-                    if (additional.isNotBlank())
-                        additional += ", "
-                    additional += "ПК инв. № ${user.inventoryNumber}"
-                }
-                if (additional.isNotBlank()) {
-                    Text(
-                        text = additional,
-                        lineHeight = 1.em
-                    )
-                }*/
                 if (user.officeId > 0) {
                     Text(
                         text = user.office,
+                        textAlign = TextAlign.Center,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold,
                         lineHeight = 1.em
                     )
                 }
                 if (user.pcList.isNotEmpty()) {
                     Text(
                         text = "ПК инв.№: ${user.pcList}",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold,
                         lineHeight = 1.em
                     )
                 }

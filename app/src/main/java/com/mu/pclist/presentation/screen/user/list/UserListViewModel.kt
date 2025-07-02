@@ -17,7 +17,6 @@ import com.mu.pclist.presentation.util.FOUND_NOTHING
 import com.mu.pclist.presentation.util.USERS
 import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
 import com.mu.pclist.presentation.util.setTitle
-import com.mu.pclist.presentation.util.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,7 +48,7 @@ class UserListViewModel @Inject constructor(
                 pcRepository.pcList().collect { pcList ->
                     computers = pcList.sortedBy { it.userId }
 
-                    users = setUserPCList(users)
+                    users = setUserPCList(users.toMutableList())
 
                     foundUsers = users
                     title = setTitle(USERS, foundUsers.size, users.size)
@@ -58,7 +57,7 @@ class UserListViewModel @Inject constructor(
         }
     }
 
-    private fun setUserPCList(users: List<UserModel>): List<UserModel> {
+    private fun setUserPCList(users: MutableList<UserModel>): List<UserModel> {
         users.forEachIndexed { idx, user ->
             val pcList = computers.filter { it.userId == user.id }
             if (pcList.isNotEmpty()) {
@@ -66,8 +65,7 @@ class UserListViewModel @Inject constructor(
                 pcList.forEach { pc ->
                     list += (if (list.isNotEmpty()) ", " else "") + pc.inventoryNumber
                 }
-                //users[idx] = user.copy(pcList = list)
-                toLog("users[idx].pcList: ${users[idx].pcList}")
+                users[idx] = user.copy(pcList = list)
             }
         }
         return users
@@ -129,7 +127,7 @@ class UserListViewModel @Inject constructor(
                             }
                         }
                     }
-                    foundUsers = setUserPCList(foundUsers)
+                    foundUsers = setUserPCList(foundUsers.toMutableList())
                 }
                 title = setTitle(USERS, foundUsers.size, users.size)
             }
