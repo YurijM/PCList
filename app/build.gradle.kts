@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -13,7 +15,7 @@ plugins {
 
 android {
     namespace = "com.mu.pclist"
-    compileSdk = 35
+    compileSdk = 36
 
     room {
         schemaDirectory("$projectDir/schemas")
@@ -22,7 +24,7 @@ android {
     defaultConfig {
         applicationId = "com.mu.pclist"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -39,8 +41,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
+    /*kotlinOptions {
         jvmTarget = "11"
+    }*/
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
     }
     buildFeatures {
         compose = true
@@ -64,6 +71,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     ksp(libs.androidx.room.gradle.plugin)
     implementation(libs.androidx.room.gradle.plugin)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
