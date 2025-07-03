@@ -1,6 +1,7 @@
 package com.mu.pclist.presentation.screen.pc.list
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,7 @@ class PCListViewModel @Inject constructor(
     var searchResult = PC_LIST_IS_EMPTY
     var title = ""
         private set
+    val position by mutableIntStateOf(50)
 
     init {
         viewModelScope.launch {
