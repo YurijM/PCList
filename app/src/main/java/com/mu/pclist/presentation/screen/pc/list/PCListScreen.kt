@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +14,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,15 +29,22 @@ import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.NEW_ID
+import kotlinx.coroutines.launch
 
 @Composable
 fun PCListScreen(
     viewModel: PCListViewModel = hiltViewModel(),
     toPC: (PCDestination) -> Unit
 ) {
-    val lazyListState: LazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = viewModel.position
-    )
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = viewModel.position) {
+        coroutineScope.launch {
+            lazyListState.scrollToItem(viewModel.position)
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {

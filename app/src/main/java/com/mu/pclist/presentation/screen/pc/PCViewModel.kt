@@ -33,6 +33,8 @@ class PCViewModel @Inject constructor(
     var familyList = mutableStateListOf<String>()
     var user by mutableStateOf(UserModel())
 
+    var saved by mutableStateOf(false)
+
     var inventoryNumberError = ""
         private set
 
@@ -77,11 +79,14 @@ class PCViewModel @Inject constructor(
                 viewModelScope.launch {
                     pc = pc.copy(inventoryNumber = pc.inventoryNumber.trim())
 
-                    if (newPC)
-                        pcRepository.insert(pc)
+                    if (newPC) {
+                        val id = pcRepository.insert(pc)
+                        pc = pc.copy(id = id)
+                    }
                     else
                         pcRepository.update(pc)
                 }
+                saved = true
             }
 
             is PCEvent.OnPCUserChange -> {

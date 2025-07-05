@@ -41,6 +41,6 @@ sealed class BottomNavItem(
     data object PCListItem : BottomNavItem(
         titleId = R.string.computers,
         iconId = R.drawable.ic_pc,
-        destination = Destinations.PCListDestination
+        destination = Destinations.PCListDestination()
     )
 }

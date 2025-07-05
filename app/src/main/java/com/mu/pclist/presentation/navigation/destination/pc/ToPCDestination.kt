@@ -6,6 +6,6 @@ import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
 
 fun NavController.navigateToPC(args: PCDestination) {
     navigate(PCDestination(args.id)) {
-        popUpTo(PCListDestination)
+        popUpTo(PCListDestination(args.id))
     }
 }

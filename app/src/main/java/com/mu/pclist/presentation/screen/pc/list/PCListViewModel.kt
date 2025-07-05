@@ -4,11 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.mu.pclist.data.entity.PCEntity
 import com.mu.pclist.domain.model.PCModel
 import com.mu.pclist.domain.repository.PCRepository
+import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.BY_OFFICES
@@ -22,7 +25,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PCListViewModel @Inject constructor(
-    private val pcRepository: PCRepository
+    private val pcRepository: PCRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var computers by mutableStateOf(emptyList<PCModel>())
     var foundComputers by mutableStateOf(emptyList<PCModel>())
@@ -31,14 +35,21 @@ class PCListViewModel @Inject constructor(
     var searchResult = PC_LIST_IS_EMPTY
     var title = ""
         private set
-    val position by mutableIntStateOf(50)
+    var position by mutableIntStateOf(0)
 
     init {
+        val args = savedStateHandle.toRoute<PCListDestination>()
+
         viewModelScope.launch {
             pcRepository.pcList().collect { list ->
                 computers = list.sortedBy { it.inventoryNumber }
                 foundComputers = computers
                 title = setTitle(COMPUTERS, foundComputers.size, computers.size)
+
+                val idx = computers.indexOf(computers.find { it.id == args.id })
+                if (idx > 0) {
+                    position = idx
+                }
             }
         }
     }
@@ -102,6 +113,7 @@ class PCListViewModel @Inject constructor(
             }
 
             is PCListEvent.OnPCListDelete -> {
+                search = ""
                 viewModelScope.launch {
                     pcRepository.delete(
                         PCEntity(
@@ -109,6 +121,7 @@ class PCListViewModel @Inject constructor(
                             inventoryNumber = event.pc.inventoryNumber,
                         )
                     )
+
                     title = setTitle(COMPUTERS, foundComputers.size, computers.size)
                 }
             }

@@ -1,5 +1,6 @@
 package com.mu.pclist.presentation.navigation
 
+import com.mu.pclist.presentation.util.NEW_ID
 import kotlinx.serialization.Serializable
 
 sealed class Destinations {
@@ -19,7 +20,7 @@ sealed class Destinations {
     data class UserDestination(val id: Long) : Destinations()
 
     @Serializable
-    data object PCListDestination : Destinations()
+    data class PCListDestination(val id: Long = NEW_ID) : Destinations()
     @Serializable
     data class PCDestination(val id: Long) : Destinations()
 }

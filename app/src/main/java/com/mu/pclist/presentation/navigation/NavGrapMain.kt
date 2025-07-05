@@ -22,7 +22,7 @@ fun NavGraphMain(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Destinations.PCListDestination
+        startDestination = Destinations.PCListDestination()
     ) {
         officeList(
             toOffice = { args ->
@@ -46,7 +46,9 @@ fun NavGraphMain(
             }
         )
         pc(
-            toPCList = { navController.navigationToPCList() }
+            toPCList = { args ->
+                navController.navigationToPCList(args)
+            }
         )
     }
 }

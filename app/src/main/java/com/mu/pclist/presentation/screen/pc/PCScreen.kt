@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,12 +28,16 @@ import com.mu.pclist.presentation.component.DropDownList
 import com.mu.pclist.presentation.component.OkAndCancel
 import com.mu.pclist.presentation.component.OutlinedTextEdit
 import com.mu.pclist.presentation.component.Title
+import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
 
 @Composable
 fun PCScreen(
     viewModel: PCViewModel = hiltViewModel(),
-    toPCList: () -> Unit
+    toPCList: (PCListDestination) -> Unit
 ) {
+    LaunchedEffect(key1 = viewModel.saved) {
+        if (viewModel.saved) toPCList(PCListDestination(viewModel.pc.id))
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -95,9 +100,9 @@ fun PCScreen(
                         enabledOk = viewModel.inventoryNumberError.isBlank(),
                         onOK = {
                             viewModel.onEvent(PCEvent.OnPCSave)
-                            toPCList()
+                            //toPCList(PCListDestination(viewModel.pc.id))
                         },
-                        onCancel = { toPCList() },
+                        onCancel = { toPCList(PCListDestination(viewModel.pc.id)) },
                     )
                 }
             }
