@@ -44,8 +44,10 @@ class UserListViewModel @Inject constructor(
                         .thenBy { it.name }
                         .thenBy { it.patronymic }
                 )
-
-                pcRepository.pcList().collect { pcList ->
+            }
+        }
+        viewModelScope.launch {
+            pcRepository.pcList().collect { pcList ->
                     computers = pcList.sortedBy { it.userId }
 
                     users = setUserPCList(users.toMutableList())
@@ -53,7 +55,7 @@ class UserListViewModel @Inject constructor(
                     foundUsers = users
                     title = setTitle(USERS, foundUsers.size, users.size)
                 }
-            }
+            //}
         }
     }
 
@@ -133,17 +135,18 @@ class UserListViewModel @Inject constructor(
             }
 
             is UserListEvent.OnUserListDelete -> {
+                search = ""
+                val userEntity = UserEntity(
+                    id = event.user.id,
+                    serviceNumber = event.user.serviceNumber,
+                    family = event.user.family,
+                    name = event.user.name,
+                    patronymic = event.user.patronymic,
+                    phone = event.user.phone,
+                    officeId = event.user.officeId.toInt()
+                )
                 viewModelScope.launch {
-                    userRepository.deleteUser(
-                        UserEntity(
-                            id = event.user.id,
-                            serviceNumber = event.user.serviceNumber,
-                            family = event.user.family,
-                            name = event.user.name,
-                            patronymic = event.user.patronymic,
-                            officeId = event.user.officeId.toInt()
-                        )
-                    )
+                    userRepository.deleteUser(userEntity)
                     title = setTitle(USERS, foundUsers.size, users.size)
                 }
             }
