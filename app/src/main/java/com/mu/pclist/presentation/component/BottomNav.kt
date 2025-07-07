@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import com.mu.pclist.R
 import com.mu.pclist.presentation.navigation.Destinations
 import com.mu.pclist.presentation.util.BottomNavItem
@@ -52,8 +51,12 @@ fun BottomNav(
         ) {
             navItems.forEach { item ->
                 val title = stringResource(id = item.titleId)
-                val isSelected =
-                    currentDestination?.hierarchy?.any { it.hasRoute((item.destination::class).qualifiedName.toString(), null) } == true
+                /*val isSelected =
+                    currentDestination?.hierarchy?.any { it.hasRoute((item.destination::class).qualifiedName.toString(), null) } == true*/
+                //val isSelected = currentDestination?.route == (item.destination::class).qualifiedName + "?id={id}"
+                val route = (item.destination::class).qualifiedName +
+                        if (currentDestination?.route?.contains("?") == true) "?id={id}" else ""
+                val isSelected = currentDestination?.route == route
 
                 NavigationBarItem(
                     colors = NavigationBarItemDefaults.colors(
