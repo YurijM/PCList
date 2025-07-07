@@ -35,7 +35,7 @@ sealed class BottomNavItem(
     data object UserListItem : BottomNavItem(
         titleId = R.string.users,
         iconId = R.drawable.ic_user,
-        destination = Destinations.UserListDestination
+        destination = Destinations.UserListDestination()
     )
 
     data object PCListItem : BottomNavItem(

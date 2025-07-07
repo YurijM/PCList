@@ -35,6 +35,8 @@ class UserViewModel @Inject constructor(
     var office by mutableStateOf(OfficeModel())
         private set
 
+    var saved by mutableStateOf(false)
+
     var familyError = ""
         private set
     var nameError = ""
@@ -133,10 +135,13 @@ class UserViewModel @Inject constructor(
                 )
 
                 viewModelScope.launch {
-                    if (newUser)
-                        userRepository.insert(user)
-                    else
+                    if (newUser) {
+                        val newId = userRepository.insert(user)
+                        user = user.copy(id = newId)
+                    } else {
                         userRepository.update(user)
+                    }
+                    saved = true
                 }
             }
         }

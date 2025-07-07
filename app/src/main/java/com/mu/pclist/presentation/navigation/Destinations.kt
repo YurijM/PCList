@@ -15,7 +15,7 @@ sealed class Destinations {
     data class OfficeDestination(val id: Long) : Destinations()
 
     @Serializable
-    data object UserListDestination : Destinations()
+    data class UserListDestination(val id: Long = NEW_ID) : Destinations()
     @Serializable
     data class UserDestination(val id: Long) : Destinations()
 

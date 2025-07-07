@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,12 +29,16 @@ import com.mu.pclist.presentation.component.DropDownList
 import com.mu.pclist.presentation.component.OkAndCancel
 import com.mu.pclist.presentation.component.OutlinedTextEdit
 import com.mu.pclist.presentation.component.Title
+import com.mu.pclist.presentation.navigation.Destinations
 
 @Composable
 fun UserScreen(
     viewModel: UserViewModel = hiltViewModel(),
-    toUserList: () -> Unit
+    toUserList: (Destinations.UserListDestination) -> Unit
 ) {
+    LaunchedEffect(key1 = viewModel.saved) {
+        if (viewModel.saved) toUserList(Destinations.UserListDestination(viewModel.user.id))
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -141,9 +146,9 @@ fun UserScreen(
                         enabledOk = viewModel.enabled,
                         onOK = {
                             viewModel.onEvent(UserEvent.OnUserSave)
-                            toUserList()
+                            //toUserList()
                         },
-                        onCancel = { toUserList() },
+                        onCancel = { toUserList(Destinations.UserListDestination(viewModel.user.id)) },
                     )
                 }
             }

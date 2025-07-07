@@ -38,7 +38,9 @@ fun NavGraphMain(
             }
         )
         user(
-            toUserList = { navController.navigationToUserList() }
+            toUserList = { args ->
+                navController.navigationToUserList(args)
+            }
         )
         pcList(
             toPC = { args ->

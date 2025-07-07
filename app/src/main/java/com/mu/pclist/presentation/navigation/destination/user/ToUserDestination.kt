@@ -6,6 +6,6 @@ import com.mu.pclist.presentation.navigation.Destinations.UserListDestination
 
 fun NavController.navigateToUser(args: UserDestination) {
     navigate(UserDestination(args.id)) {
-        popUpTo(UserListDestination)
+        popUpTo(UserListDestination(args.id))
     }
 }
