@@ -30,7 +30,7 @@ class PCListViewModel @Inject constructor(
 ) : ViewModel() {
     var computers by mutableStateOf(emptyList<PCModel>())
     var foundComputers by mutableStateOf(emptyList<PCModel>())
-    var sortBy by mutableStateOf(BY_INVENTORY_NUMBER)
+    var sortedBy by mutableStateOf(BY_INVENTORY_NUMBER)
     var search by mutableStateOf("")
     var searchResult = PC_LIST_IS_EMPTY
     var title = ""
@@ -39,10 +39,12 @@ class PCListViewModel @Inject constructor(
 
     init {
         val args = savedStateHandle.toRoute<PCListDestination>()
+        sortedBy = args.sortedBy
 
         viewModelScope.launch {
             pcRepository.pcList().collect { list ->
-                computers = list.sortedBy { it.inventoryNumber }
+                computers = list.sortedList(sortedBy)
+
                 foundComputers = computers
                 title = setTitle(COMPUTERS, foundComputers.size, computers.size)
 
@@ -54,6 +56,27 @@ class PCListViewModel @Inject constructor(
         }
     }
 
+    private fun List<PCModel>.sortedList(sortedBy: String) = when (sortedBy) {
+        BY_FAMILY -> {
+            this.sortedWith(
+                compareBy<PCModel> { it.family }
+                    .thenBy { it.name }
+                    .thenBy { it.patronymic }
+            )
+        }
+
+        BY_OFFICES -> {
+            this.sortedWith(
+                compareBy<PCModel> { it.office }
+                    .thenBy { it.inventoryNumber }
+            )
+        }
+
+        else -> {
+            this.sortedBy { it.inventoryNumber }
+        }
+    }
+
     fun onEvent(event: PCListEvent) {
         when (event) {
             is PCListEvent.OnPCListSortByChange -> {
@@ -61,27 +84,8 @@ class PCListViewModel @Inject constructor(
                 foundComputers = computers
                 title = setTitle(COMPUTERS, foundComputers.size, computers.size)
 
-                sortBy = event.sortBy
-                foundComputers = when (sortBy) {
-                    BY_FAMILY -> {
-                        foundComputers.sortedWith(
-                            compareBy<PCModel> { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                    }
-
-                    BY_OFFICES -> {
-                        foundComputers.sortedWith(
-                            compareBy<PCModel> { it.office }
-                                .thenBy { it.inventoryNumber }
-                        )
-                    }
-
-                    else -> {
-                        foundComputers.sortedBy { it.inventoryNumber }
-                    }
-                }
+                sortedBy = event.sortBy
+                foundComputers = foundComputers.sortedList(sortedBy)
             }
 
             is PCListEvent.OnPCListSearchChange -> {
@@ -91,7 +95,7 @@ class PCListViewModel @Inject constructor(
                     searchResult = PC_LIST_IS_EMPTY
                 } else {
                     searchResult = FOUND_NOTHING
-                    foundComputers = when (sortBy) {
+                    foundComputers = when (sortedBy) {
                         BY_FAMILY -> {
                             computers.filter {
                                 it.family.contains(search, ignoreCase = true)

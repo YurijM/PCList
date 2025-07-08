@@ -58,12 +58,12 @@ fun PCListScreen(
             Title(viewModel.title)
             SortPanel(
                 sortList = listOf(BY_INVENTORY_NUMBER, BY_FAMILY, BY_OFFICES),
-                currentValue = viewModel.sortBy,
+                currentValue = viewModel.sortedBy,
                 onChange = { newValue -> viewModel.onEvent(PCListEvent.OnPCListSortByChange(newValue)) }
             )
             SearchPanel(
                 search = viewModel.search,
-                label = "Поиск по ${viewModel.sortBy}",
+                label = "Поиск по ${viewModel.sortedBy}",
                 onChange = { newValue -> viewModel.onEvent(PCListEvent.OnPCListSearchChange(newValue)) },
                 onClear = { viewModel.onEvent(PCListEvent.OnPCListSearchChange("")) },
                 modifier = Modifier
@@ -93,7 +93,7 @@ fun PCListScreen(
                 items(viewModel.foundComputers) { pc ->
                     PCListItemScreen(
                         pc = pc,
-                        onEdit = { toPC(PCDestination(pc.id)) },
+                        onEdit = { toPC(PCDestination(pc.id, viewModel.sortedBy)) },
                         onDelete = { viewModel.onEvent(PCListEvent.OnPCListDelete(pc)) },
                     )
                 }

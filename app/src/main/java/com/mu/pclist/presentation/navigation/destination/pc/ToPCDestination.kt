@@ -5,7 +5,7 @@ import com.mu.pclist.presentation.navigation.Destinations.PCDestination
 import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
 
 fun NavController.navigateToPC(args: PCDestination) {
-    navigate(PCDestination(args.id)) {
-        popUpTo(PCListDestination(args.id))
+    navigate(PCDestination(args.id, args.sortedBy)) {
+        popUpTo(PCListDestination(args.id, args.sortedBy))
     }
 }

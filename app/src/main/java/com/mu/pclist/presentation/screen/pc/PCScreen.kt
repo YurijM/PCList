@@ -36,7 +36,9 @@ fun PCScreen(
     toPCList: (PCListDestination) -> Unit
 ) {
     LaunchedEffect(key1 = viewModel.saved) {
-        if (viewModel.saved) toPCList(PCListDestination(viewModel.pc.id))
+        if (viewModel.saved) {
+            toPCList(PCListDestination(viewModel.pc.id, viewModel.sortedBy))
+        }
     }
     Surface(
         modifier = Modifier
@@ -100,9 +102,10 @@ fun PCScreen(
                         enabledOk = viewModel.inventoryNumberError.isBlank(),
                         onOK = {
                             viewModel.onEvent(PCEvent.OnPCSave)
-                            //toPCList(PCListDestination(viewModel.pc.id))
                         },
-                        onCancel = { toPCList(PCListDestination(viewModel.pc.id)) },
+                        onCancel = {
+                            toPCList(PCListDestination(viewModel.pc.id, viewModel.sortedBy))
+                        },
                     )
                 }
             }

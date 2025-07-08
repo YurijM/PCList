@@ -14,6 +14,7 @@ import com.mu.pclist.domain.model.UserModel
 import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.PCDestination
+import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.NEW_ID
 import com.mu.pclist.presentation.util.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,7 @@ class PCViewModel @Inject constructor(
     var user by mutableStateOf(UserModel())
 
     var saved by mutableStateOf(false)
+    var sortedBy = BY_INVENTORY_NUMBER
 
     var inventoryNumberError = ""
         private set
@@ -41,6 +43,7 @@ class PCViewModel @Inject constructor(
     init {
         val args = savedStateHandle.toRoute<PCDestination>()
         id = args.id
+        sortedBy = args.sortedBy
 
         viewModelScope.launch {
             familyList.add("")
