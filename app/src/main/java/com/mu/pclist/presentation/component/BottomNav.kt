@@ -55,7 +55,8 @@ fun BottomNav(
                     currentDestination?.hierarchy?.any { it.hasRoute((item.destination::class).qualifiedName.toString(), null) } == true*/
                 //val isSelected = currentDestination?.route == (item.destination::class).qualifiedName + "?id={id}"
                 val route = (item.destination::class).qualifiedName +
-                        if (currentDestination?.route?.contains("?") == true) "?id={id}" else ""
+                        if (currentDestination?.route?.contains("?") == true) "?id={id}&sortedBy={sortedBy}"
+                        else ""
                 val isSelected = currentDestination?.route == route
 
                 NavigationBarItem(
