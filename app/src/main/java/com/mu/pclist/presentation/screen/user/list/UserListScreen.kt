@@ -58,12 +58,12 @@ fun UserListScreen(
             Title(viewModel.title)
             SortPanel(
                 sortList = listOf(BY_FAMILY, BY_SERVICE_NUMBER, BY_OFFICES),
-                currentValue = viewModel.sortBy,
+                currentValue = viewModel.sortedBy,
                 onChange = { newValue -> viewModel.onEvent(UserListEvent.OnUserListSortByChange(newValue)) }
             )
             SearchPanel(
                 search = viewModel.search,
-                label = "Поиск по ${viewModel.sortBy}",
+                label = "Поиск по ${viewModel.sortedBy}",
                 onChange = { newValue -> viewModel.onEvent(UserListEvent.OnUserListSearchChange(newValue)) },
                 onClear = { viewModel.onEvent(UserListEvent.OnUserListSearchChange("")) },
                 modifier = Modifier
@@ -93,7 +93,7 @@ fun UserListScreen(
                 items(viewModel.foundUsers) { user ->
                     UserListItemScreen(
                         user = user,
-                        onEdit = { toUser(UserDestination(user.id)) },
+                        onEdit = { toUser(UserDestination(user.id, viewModel.sortedBy)) },
                         onDelete = { viewModel.onEvent(UserListEvent.OnUserListDelete(user)) },
                     )
                 }

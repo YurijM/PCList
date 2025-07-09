@@ -34,7 +34,7 @@ class UserListViewModel @Inject constructor(
     //var users = userRepository.userList()
     var users by mutableStateOf(emptyList<UserModel>())
     var foundUsers by mutableStateOf(emptyList<UserModel>())
-    var sortBy by mutableStateOf(BY_FAMILY)
+    var sortedBy by mutableStateOf(BY_FAMILY)
     var search by mutableStateOf("")
     var searchResult = USER_LIST_IS_EMPTY
     var computers by mutableStateOf(emptyList<PCModel>())
@@ -44,26 +44,7 @@ class UserListViewModel @Inject constructor(
 
     init {
         val args = savedStateHandle.toRoute<PCListDestination>()
-
-        /*viewModelScope.launch {
-            userRepository.userList().collect { list ->
-                users = list.sortedWith(
-                    compareBy<UserModel> { it.family }
-                        .thenBy { it.name }
-                        .thenBy { it.patronymic }
-                )
-            }
-        }
-        viewModelScope.launch {
-            pcRepository.pcList().collect { pcList ->
-                computers = pcList.sortedBy { it.userId }
-
-                users = setUserPCList(users.toMutableList())
-
-                foundUsers = users
-                title = setTitle(USERS, foundUsers.size, users.size)
-            }
-        }*/
+        sortedBy = args.sortedBy
 
         viewModelScope.launch {
             pcRepository.pcList().collect { pcList ->
@@ -72,11 +53,7 @@ class UserListViewModel @Inject constructor(
         }
         viewModelScope.launch {
             userRepository.userList().collect { list ->
-                users = list.sortedWith(
-                    compareBy<UserModel> { it.family }
-                        .thenBy { it.name }
-                        .thenBy { it.patronymic }
-                )
+                users = list.sortedList(sortedBy)
                 users = setUserPCList(users.toMutableList())
 
                 foundUsers = users
@@ -87,6 +64,29 @@ class UserListViewModel @Inject constructor(
                     position = idx
                 }
             }
+        }
+    }
+
+    private fun List<UserModel>.sortedList(sortedBy: String) = when (sortedBy) {
+        BY_SERVICE_NUMBER -> {
+            this.sortedBy { it.serviceNumber }
+        }
+
+        BY_OFFICES -> {
+            this.sortedWith(
+                compareBy<UserModel> { it.office }
+                    .thenBy { it.family }
+                    .thenBy { it.name }
+                    .thenBy { it.patronymic }
+            )
+        }
+
+        else -> {
+            this.sortedWith(
+                compareBy<UserModel> { it.family }
+                    .thenBy { it.name }
+                    .thenBy { it.patronymic }
+            )
         }
     }
 
@@ -111,29 +111,8 @@ class UserListViewModel @Inject constructor(
                 foundUsers = users
                 title = setTitle(USERS, foundUsers.size, users.size)
 
-                sortBy = event.sortBy
-                foundUsers = when (sortBy) {
-                    BY_SERVICE_NUMBER -> {
-                        foundUsers.sortedBy { it.serviceNumber }
-                    }
-
-                    BY_OFFICES -> {
-                        foundUsers.sortedWith(
-                            compareBy<UserModel> { it.office }
-                                .thenBy { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                    }
-
-                    else -> {
-                        foundUsers.sortedWith(
-                            compareBy<UserModel> { it.family }
-                                .thenBy { it.name }
-                                .thenBy { it.patronymic }
-                        )
-                    }
-                }
+                sortedBy = event.sortBy
+                foundUsers = foundUsers.sortedList(sortedBy)
             }
 
             is UserListEvent.OnUserListSearchChange -> {
@@ -143,7 +122,7 @@ class UserListViewModel @Inject constructor(
                     searchResult = USER_LIST_IS_EMPTY
                 } else {
                     searchResult = FOUND_NOTHING
-                    foundUsers = when (sortBy) {
+                    foundUsers = when (sortedBy) {
                         BY_SERVICE_NUMBER -> {
                             users.filter { it.serviceNumber.contains(search, ignoreCase = true) }
                         }

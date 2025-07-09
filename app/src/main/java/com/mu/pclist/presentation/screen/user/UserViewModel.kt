@@ -14,6 +14,7 @@ import com.mu.pclist.domain.model.OfficeModel
 import com.mu.pclist.domain.repository.OfficeRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.UserDestination
+import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.NEW_ID
 import com.mu.pclist.presentation.util.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,7 @@ class UserViewModel @Inject constructor(
         private set
 
     var saved by mutableStateOf(false)
+    var sortedBy = BY_FAMILY
 
     var familyError = ""
         private set
@@ -53,6 +55,7 @@ class UserViewModel @Inject constructor(
     init {
         val args = savedStateHandle.toRoute<UserDestination>()
         id = args.id
+        sortedBy = args.sortedBy
 
         viewModelScope.launch {
             officeList.add("")
