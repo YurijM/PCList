@@ -1,22 +1,21 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt)
 
     alias(libs.plugins.serialization)
-
     alias(libs.plugins.room)
 }
 
 android {
     namespace = "com.mu.pclist"
-    compileSdk = 36
+    compileSdk {
+        version = release(36)
+    }
 
+    //noinspection WrongGradleMethod
     room {
         schemaDirectory("$projectDir/schemas")
     }
@@ -38,15 +37,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    /*kotlinOptions {
-        jvmTarget = "11"
-    }*/
+    //noinspection WrongGradleMethod
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmToolchain(17)
         }
     }
     buildFeatures {
@@ -61,8 +58,13 @@ dependencies {
     ksp(libs.dagger.compiler.ksp)
     ksp(libs.hilt.compiler.ksp)
 
+    // Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Material
+    implementation(libs.androidx.material)
+
+    // Navigation
     implementation(libs.androidx.navigation)
 
     // Room
