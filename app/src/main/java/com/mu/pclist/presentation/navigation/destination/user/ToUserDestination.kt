@@ -5,7 +5,7 @@ import com.mu.pclist.presentation.navigation.Destinations.UserDestination
 import com.mu.pclist.presentation.navigation.Destinations.UserListDestination
 
 fun NavController.navigateToUser(args: UserDestination) {
-    navigate(UserDestination(args.id, args.sortedBy)) {
-        popUpTo(UserListDestination(args.id, args.sortedBy))
+    navigate(UserDestination(args.id, args.sortedBy, args.search)) {
+        popUpTo(UserListDestination(args.id, args.sortedBy, args.search))
     }
 }

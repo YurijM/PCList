@@ -17,9 +17,17 @@ sealed class Destinations {
     data class OfficeDestination(val id: Long) : Destinations()
 
     @Serializable
-    data class UserListDestination(val id: Long = NEW_ID, val sortedBy: String = BY_FAMILY) : Destinations()
+    data class UserListDestination(
+        val id: Long = NEW_ID,
+        val sortedBy: String = BY_FAMILY,
+        val search: String = ""
+    ) : Destinations()
     @Serializable
-    data class UserDestination(val id: Long, val sortedBy: String = BY_FAMILY) : Destinations()
+    data class UserDestination(
+        val id: Long,
+        val sortedBy: String = BY_FAMILY,
+        val search: String = ""
+    ) : Destinations()
 
     @Serializable
     data class PCListDestination(val id: Long = NEW_ID, val sortedBy: String = BY_INVENTORY_NUMBER) : Destinations()

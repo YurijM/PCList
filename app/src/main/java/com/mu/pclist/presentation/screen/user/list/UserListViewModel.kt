@@ -13,7 +13,7 @@ import com.mu.pclist.domain.model.PCModel
 import com.mu.pclist.domain.model.UserModel
 import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
-import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
+import com.mu.pclist.presentation.navigation.Destinations.UserListDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
@@ -43,8 +43,9 @@ class UserListViewModel @Inject constructor(
     var position by mutableIntStateOf(0)
 
     init {
-        val args = savedStateHandle.toRoute<PCListDestination>()
+        val args = savedStateHandle.toRoute<UserListDestination>()
         sortedBy = args.sortedBy
+        search = args.search
 
         viewModelScope.launch {
             pcRepository.pcList().collect { pcList ->
@@ -56,12 +57,32 @@ class UserListViewModel @Inject constructor(
                 users = list.sortedList(sortedBy)
                 users = setUserPCList(users.toMutableList())
 
-                foundUsers = users
+                foundUsers = searchResult(sortedBy, search)
                 title = setTitle(USERS, foundUsers.size, users.size)
 
                 val idx = users.indexOf(users.find { it.id == args.id })
                 if (idx > 0) {
                     position = idx
+                }
+            }
+        }
+    }
+
+    private fun searchResult(sortedBy: String, search: String): List<UserModel> {
+        return when (sortedBy) {
+            BY_SERVICE_NUMBER -> {
+                users.filter { it.serviceNumber.contains(search, ignoreCase = true) }
+            }
+
+            BY_OFFICES -> {
+                users.filter { it.office.contains(search, ignoreCase = true) }
+            }
+
+            else -> {
+                users.filter {
+                    it.family.contains(search, ignoreCase = true)
+                            || it.name.contains(search, ignoreCase = true)
+                            || it.patronymic.contains(search, ignoreCase = true)
                 }
             }
         }
@@ -122,30 +143,14 @@ class UserListViewModel @Inject constructor(
                     searchResult = USER_LIST_IS_EMPTY
                 } else {
                     searchResult = FOUND_NOTHING
-                    foundUsers = when (sortedBy) {
-                        BY_SERVICE_NUMBER -> {
-                            users.filter { it.serviceNumber.contains(search, ignoreCase = true) }
-                        }
-
-                        BY_OFFICES -> {
-                            users.filter { it.office.contains(search, ignoreCase = true) }
-                        }
-
-                        else -> {
-                            users.filter {
-                                it.family.contains(search, ignoreCase = true)
-                                        || it.name.contains(search, ignoreCase = true)
-                                        || it.patronymic.contains(search, ignoreCase = true)
-                            }
-                        }
-                    }
+                    foundUsers = searchResult(sortedBy, search)
                     foundUsers = setUserPCList(foundUsers.toMutableList())
                 }
                 title = setTitle(USERS, foundUsers.size, users.size)
             }
 
             is UserListEvent.OnUserListDelete -> {
-                search = ""
+                //search = ""
                 val userEntity = UserEntity(
                     id = event.user.id,
                     serviceNumber = event.user.serviceNumber,

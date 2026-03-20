@@ -38,7 +38,11 @@ fun UserScreen(
 ) {
     LaunchedEffect(key1 = viewModel.saved) {
         if (viewModel.saved) {
-            toUserList(Destinations.UserListDestination(viewModel.user.id, viewModel.sortedBy))
+            toUserList(Destinations.UserListDestination(
+                viewModel.user.id,
+                viewModel.sortedBy,
+                viewModel.search
+            ))
         }
     }
     Surface(
@@ -150,7 +154,11 @@ fun UserScreen(
                             viewModel.onEvent(UserEvent.OnUserSave)
                         },
                         onCancel = {
-                            toUserList(Destinations.UserListDestination(viewModel.user.id, viewModel.sortedBy))
+                            toUserList(Destinations.UserListDestination(
+                                viewModel.user.id,
+                                viewModel.sortedBy,
+                                viewModel.search
+                            ))
                         },
                     )
                 }

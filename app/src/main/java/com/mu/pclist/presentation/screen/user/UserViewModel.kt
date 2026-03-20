@@ -38,6 +38,7 @@ class UserViewModel @Inject constructor(
 
     var saved by mutableStateOf(false)
     var sortedBy = BY_FAMILY
+    var search = ""
 
     var familyError = ""
         private set
@@ -56,6 +57,7 @@ class UserViewModel @Inject constructor(
         val args = savedStateHandle.toRoute<UserDestination>()
         id = args.id
         sortedBy = args.sortedBy
+        search = args.search
 
         viewModelScope.launch {
             officeList.add("")

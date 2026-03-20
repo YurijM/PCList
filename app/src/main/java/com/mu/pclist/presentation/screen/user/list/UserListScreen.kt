@@ -93,7 +93,7 @@ fun UserListScreen(
                 items(viewModel.foundUsers) { user ->
                     UserListItemScreen(
                         user = user,
-                        onEdit = { toUser(UserDestination(user.id, viewModel.sortedBy)) },
+                        onEdit = { toUser(UserDestination(user.id, viewModel.sortedBy, viewModel.search)) },
                         onDelete = { viewModel.onEvent(UserListEvent.OnUserListDelete(user)) },
                     )
                 }

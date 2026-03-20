@@ -19,7 +19,7 @@ fun Int.toDp(context: Context): Int =
 fun setTitle(title: String, foundSize: Int, size: Int): String =
     title +
             if (size > 0) {
-                " (" + if (foundSize > 0 && foundSize < size) {
+                " (" + if (foundSize in 1..<size) {
                     "$foundSize из "
                 } else {
                     ""
