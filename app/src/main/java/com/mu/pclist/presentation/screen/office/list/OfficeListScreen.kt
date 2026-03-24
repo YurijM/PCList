@@ -76,7 +76,7 @@ fun OfficeListScreen(
                     }
 
                     IconButton(
-                        onClick = { viewModel.createFile(context) },
+                        onClick = { viewModel.createExtFile(context) },
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(
