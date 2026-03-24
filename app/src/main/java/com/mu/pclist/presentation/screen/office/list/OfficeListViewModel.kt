@@ -18,6 +18,10 @@ class OfficeListViewModel @Inject constructor(
     var offices = officeRepository.officeList()
 
     fun createFile(context: Context) {
+        val filename = "qwerty.txt"
+        val dir = "test"
+        val content = "Test qwerty"
+
         val path = context.filesDir
         toLog("path: $path")
 
@@ -25,23 +29,24 @@ class OfficeListViewModel @Inject constructor(
         /*val path = context.getExternalFilesDir(null)
         <uses-permission android-name="android.permission.WRITE_EXTERNAL_STORAGE" />*/
 
-        val newDir = File(path, "Test")
-        toLog("newDir: $newDir")
-        //toLog("mkdirs: ${newDir.mkdirs()}")
+        val newPath = File(path, dir)
+        toLog("newDir: $newPath")
 
-        var file = File(newDir, "Qwerty.txt")
+        if (!newPath.exists()) newPath.mkdir()
+
+        var file = File(newPath, filename)
         toLog("file: ${file.path}")
 
         //context.openFileOutput("Qwerty.txt", Context.MODE_PRIVATE).use {
         file.outputStream().use {
-            it.write("Test qwerty 2".toByteArray())
+            it.write(content.toByteArray())
             toLog("write")
         }
 
-        file = File(newDir, "Qwerty.txt")
+        file = File(newPath, filename)
         //val file = File(path, "Qwerty.txt")
-        val content = file.readText()
-        toLog("read: $content")
+        //val content = file.readText()
+        toLog("read: ${file.readText()}")
     }
 
     fun onEvent(event: OfficeListEvent) {
