@@ -2,11 +2,17 @@ package com.mu.pclist.presentation.screen.office.list
 
 import android.content.Context
 import android.os.Environment
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.pclist.data.entity.OfficeEntity
+import com.mu.pclist.domain.model.OfficeModel
 import com.mu.pclist.domain.repository.OfficeRepository
-import com.mu.pclist.presentation.util.toLog
+import com.mu.pclist.presentation.util.ROOT_DIR_OFFICES
+import com.mu.pclist.presentation.util.SUB_DIR_OFFICES
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -18,43 +24,59 @@ import javax.inject.Inject
 class OfficeListViewModel @Inject constructor(
     private val officeRepository: OfficeRepository
 ) : ViewModel() {
-    var offices = officeRepository.officeList()
+    //var offices = officeRepository.officeList()
+    var offices by mutableStateOf(emptyList<OfficeModel>())
+    var writeResult by mutableStateOf("")
 
-    fun createExtFile(context: Context) {
-        val content = "Здесь будет список ПК"
-        val filename = "pclist.txt"
-        val dir = "pclist"
-
-        val folder: File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        toLog("folder: $folder")
-
-        val newPath = File(folder, dir)
-        toLog("newPath: $newPath")
-        if (!newPath.exists()) newPath.mkdir()
-
-        // Storing the data in file with name as qwerty.txt
-        val file = File(newPath, filename)
-        writeTextData(file, content)
+    init {
+        viewModelScope.launch {
+            officeRepository.officeList().collect { list ->
+                offices = list
+            }
+        }
     }
 
-    private fun writeTextData(file: File, data: String) {
+    fun createExtFile(context: Context) {
+        writeResult = ""
+
+        val filename = "offices.txt"
+
+        var path: File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        path = File(path, ROOT_DIR_OFFICES)
+        if (!path.exists()) path.mkdir()
+        path = File(path, SUB_DIR_OFFICES)
+        if (!path.exists()) path.mkdir()
+
+        val fullPath = "${Environment.DIRECTORY_DOWNLOADS}/ $ROOT_DIR_OFFICES/ $SUB_DIR_OFFICES/ $filename"
+
+        val file = File(path, filename)
+        file.writeText("")
+
         var fileOutputStream: FileOutputStream? = null
         try {
-            fileOutputStream = FileOutputStream(file)
-            fileOutputStream.write(data.toByteArray())
-            toLog("write success")
+            fileOutputStream = FileOutputStream(file, true)
+            val title = "№;Код;Сокращенно;Отдел\n"
+            fileOutputStream.write(title.toByteArray())
+
+            offices.forEachIndexed { index, office ->
+                val data = "${index + 1};${office.code};${office.shortName};${office.office}\n"
+                fileOutputStream.write(data.toByteArray())
+            }
+            writeResult = "Создан файл $fullPath"
         } catch (e: Exception) {
             //e.printStackTrace()
-            toLog("write exception: ${e.message}")
+            writeResult = "Ошибка записи в файл $filename"
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close()
-                    toLog("close success")
                 } catch (e: IOException) {
                     //e.printStackTrace()
-                    toLog("close exception: ${e.message}")
+                    writeResult = "Ошибка закрытия файла $filename"
                 }
+            }
+            if (writeResult.isNotBlank()) {
+                Toast.makeText(context, writeResult, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -62,33 +84,22 @@ class OfficeListViewModel @Inject constructor(
     fun createFile(context: Context) {
         val filename = "qwerty.txt"
         val dir = "test"
-        val content = "Test qwerty"
+        var content = "Test qwerty"
 
         val path = context.filesDir
-        toLog("path: $path")
-
-        //External Storage
-        /*val path = context.getExternalFilesDir(null)
-        <uses-permission android-name="android.permission.WRITE_EXTERNAL_STORAGE" />*/
 
         val newPath = File(path, dir)
-        toLog("newDir: $newPath")
-
         if (!newPath.exists()) newPath.mkdir()
 
         var file = File(newPath, filename)
-        toLog("file: ${file.path}")
 
         //context.openFileOutput("Qwerty.txt", Context.MODE_PRIVATE).use {
         file.outputStream().use {
             it.write(content.toByteArray())
-            toLog("write")
         }
 
         file = File(newPath, filename)
-        //val file = File(path, "Qwerty.txt")
-        //val content = file.readText()
-        toLog("read: ${file.readText()}")
+        content = file.readText()
     }
 
     fun onEvent(event: OfficeListEvent) {
