@@ -1,5 +1,7 @@
 package com.mu.pclist.presentation.screen.user.list
 
+import android.os.Environment
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,12 +19,18 @@ import com.mu.pclist.presentation.navigation.Destinations.UserListDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
+import com.mu.pclist.presentation.util.DIR_DOCS
 import com.mu.pclist.presentation.util.FOUND_NOTHING
+import com.mu.pclist.presentation.util.SUB_DIR_USERS
 import com.mu.pclist.presentation.util.USERS
 import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
+import com.mu.pclist.presentation.util.createExtFile
+import com.mu.pclist.presentation.util.currentDateToString
 import com.mu.pclist.presentation.util.setTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -139,7 +147,7 @@ class UserListViewModel @Inject constructor(
             is UserListEvent.OnUserListSearchChange -> {
                 search = event.search
                 if (search.isBlank()) {
-                    foundUsers = users
+                    foundUsers = setUserPCList(users.toMutableList())
                     searchResult = USER_LIST_IS_EMPTY
                 } else {
                     searchResult = FOUND_NOTHING
@@ -163,6 +171,77 @@ class UserListViewModel @Inject constructor(
                 viewModelScope.launch {
                     userRepository.deleteUser(userEntity)
                     title = setTitle(USERS, foundUsers.size, users.size)
+                }
+            }
+
+            is UserListEvent.OnUserListDocCreate -> {
+                var writeResult = ""
+                val filename = "users.txt"
+                val date = currentDateToString()
+                var sort = "сортировка по "
+                var header = ""
+                when (sortedBy) {
+                    BY_FAMILY -> {
+                        sort = "по фамилии"
+                        header = "№ п/п;ФИО;Таб. №;Телефон;Отдел;Компьютеры"
+                    }
+
+                    BY_SERVICE_NUMBER -> {
+                        sort = "по табельному номеру"
+                        header = "№ п/п;Таб. №;ФИО;Телефон;Отдел;Компьютеры"
+                    }
+
+                    BY_OFFICES -> {
+                        sort = "по отделам"
+                        header = "№ п/п;Отдел;ФИО;Таб. №;Телефон;Компьютеры"
+                    }
+                }
+
+                val file = createExtFile(filename, SUB_DIR_USERS)
+
+                val fullPath = "${Environment.DIRECTORY_DOWNLOADS}/ $DIR_DOCS/ $SUB_DIR_USERS/ $filename"
+
+                var fileOutputStream: FileOutputStream? = null
+                try {
+                    fileOutputStream = FileOutputStream(file, true)
+
+                    fileOutputStream.write("Список сотрудиков на $date\n".toByteArray())
+                    fileOutputStream.write("($sort\n)".toByteArray())
+                    fileOutputStream.write("$header\n".toByteArray())
+
+                    users.forEachIndexed { index, user ->
+                        val data = when (sortedBy) {
+                            BY_FAMILY -> "${index + 1};${user.family} ${user.name} ${user.patronymic};" +
+                                    "${user.serviceNumber};${user.phone};${user.office};${user.pcList}\n"
+
+                            BY_SERVICE_NUMBER -> "${index + 1};${user.serviceNumber};" +
+                                    "${user.family} ${user.name} ${user.patronymic};" +
+                                    "${user.phone};${user.office};${user.pcList}\n"
+
+                            BY_OFFICES -> "${index + 1};${user.office};" +
+                                    "${user.family} ${user.name} ${user.patronymic};" +
+                                    "${user.serviceNumber};${user.phone};${user.pcList}\n"
+
+                            else -> ""
+                        }
+                        fileOutputStream.write(data.toByteArray())
+                    }
+                    writeResult = "Создан файл $fullPath"
+                } catch (e: Exception) {
+                    //e.printStackTrace()
+                    writeResult = "Ошибка ${e.message}"
+                } finally {
+                    if (fileOutputStream != null) {
+                        try {
+                            fileOutputStream.close()
+                        } catch (e: IOException) {
+                            //e.printStackTrace()
+                            writeResult = "Ошибка ${e.message}"
+                        }
+                    }
+                    if (writeResult.isNotBlank()) {
+                        Toast.makeText(event.context, writeResult, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

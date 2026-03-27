@@ -67,7 +67,6 @@ fun OfficeListScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                //horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)

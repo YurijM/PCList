@@ -1,7 +1,12 @@
 package com.mu.pclist.presentation.screen.user.list
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,11 +20,21 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mu.pclist.R
+import com.mu.pclist.presentation.component.DialogText
 import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.SearchPanel
 import com.mu.pclist.presentation.component.SortPanel
@@ -38,6 +53,8 @@ fun UserListScreen(
 ) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    var openDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.position) {
         coroutineScope.launch {
@@ -55,7 +72,31 @@ fun UserListScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Title(viewModel.title)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(.8f)
+                ) {
+                    Title(viewModel.title)
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_save),
+                    contentDescription = "save",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                    modifier = Modifier
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(8.dp)
+                        .clickable { openDialog = true },
+                )
+            }
             SortPanel(
                 sortList = listOf(BY_FAMILY, BY_SERVICE_NUMBER, BY_OFFICES),
                 currentValue = viewModel.sortedBy,
@@ -103,4 +144,19 @@ fun UserListScreen(
     FabAdd(
         alignment = Alignment.BottomCenter
     ) { toUser(UserDestination(NEW_ID)) }
+
+    if (openDialog) {
+        DialogText(
+            text = "Будет создан текстовый файл со списком сотрудиков",
+            showCancel = true,
+            onDismiss = {},
+            titleOK = stringResource(R.string.create),
+            titleCancel = stringResource(R.string.no),
+            onOK = {
+                viewModel.onEvent(UserListEvent.OnUserListDocCreate(context))
+                openDialog = false
+            },
+            onCancel = { openDialog = false },
+        )
+    }
 }

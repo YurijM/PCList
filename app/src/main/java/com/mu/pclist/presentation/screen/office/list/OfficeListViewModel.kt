@@ -35,51 +35,6 @@ class OfficeListViewModel @Inject constructor(
         }
     }
 
-    /*fun createExtFile(context: Context) {
-        writeResult = ""
-
-        val filename = "offices.txt"
-
-        var path: File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        path = File(path, DIR_DOCS)
-        if (!path.exists()) path.mkdir()
-        path = File(path, SUB_DIR_OFFICES)
-        if (!path.exists()) path.mkdir()
-
-        val fullPath = "${Environment.DIRECTORY_DOWNLOADS}/ $DIR_DOCS/ $SUB_DIR_OFFICES/ $filename"
-
-        val file = File(path, filename)
-        file.writeText("")
-
-        var fileOutputStream: FileOutputStream? = null
-        try {
-            fileOutputStream = FileOutputStream(file, true)
-            val title = "№;Код;Сокращенно;Отдел\n"
-            fileOutputStream.write(title.toByteArray())
-
-            offices.forEachIndexed { index, office ->
-                val data = "${index + 1};${office.code};${office.shortName};${office.office}\n"
-                fileOutputStream.write(data.toByteArray())
-            }
-            writeResult = "Создан файл $fullPath"
-        } catch (e: Exception) {
-            //e.printStackTrace()
-            writeResult = "Ошибка записи в файл $filename"
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close()
-                } catch (e: IOException) {
-                    //e.printStackTrace()
-                    writeResult = "Ошибка закрытия файла $filename"
-                }
-            }
-            if (writeResult.isNotBlank()) {
-                Toast.makeText(context, writeResult, Toast.LENGTH_LONG).show()
-            }
-        }
-    }*/
-
     fun onEvent(event: OfficeListEvent) {
         when (event) {
             is OfficeListEvent.OnOfficeListDelete -> {
