@@ -3,7 +3,6 @@ package com.mu.pclist.presentation.screen.office.list
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +18,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mu.pclist.R
+import com.mu.pclist.presentation.component.DialogText
 import com.mu.pclist.presentation.component.FabAdd
 import com.mu.pclist.presentation.component.Title
 import com.mu.pclist.presentation.navigation.Destinations.OfficeDestination
@@ -41,6 +45,7 @@ fun OfficeListScreen(
 ) {
     //val offices by viewModel.offices.collectAsState(initial = null)
     val context = LocalContext.current
+    var openDialog by remember { mutableStateOf(false) }
 
     /*if (offices == null) {
         Box(
@@ -62,7 +67,7 @@ fun OfficeListScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                //horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -87,7 +92,7 @@ fun OfficeListScreen(
                             shape = RoundedCornerShape(50)
                         )
                         .padding(8.dp)
-                        .clickable { viewModel.createExtFile(context) },
+                        .clickable { openDialog = true },
                 )
             }
             HorizontalDivider(
@@ -119,5 +124,20 @@ fun OfficeListScreen(
     FabAdd(
         alignment = Alignment.BottomCenter
     ) { toOffice(OfficeDestination(NEW_ID)) }
+
+    if (openDialog) {
+        DialogText(
+            text = "Будет создан текстовый файл со списком отделов",
+            showCancel = true,
+            onDismiss = {},
+            titleOK = stringResource(R.string.create),
+            titleCancel = stringResource(R.string.no),
+            onOK = {
+                viewModel.onEvent(OfficeListEvent.OnOfficeListDocCreate(context))
+                openDialog = false
+            },
+            onCancel = { openDialog = false },
+        )
+    }
     //}
 }

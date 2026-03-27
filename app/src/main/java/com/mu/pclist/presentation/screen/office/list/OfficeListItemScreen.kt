@@ -83,7 +83,8 @@ fun OfficeListItemScreen(
                 Text(
                     text = office.office,
                     fontSize = 18.sp,
-                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     lineHeight = 1.em
                 )

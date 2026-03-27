@@ -10,7 +10,7 @@ const val NEW_ID = 0L
 const val USERS = "Пользователи"
 const val COMPUTERS = "Компьютеры"
 
-const val ROOT_DIR_OFFICES = "PCList"
+const val DIR_DOCS = "PCList"
 const val SUB_DIR_OFFICES = "Offices"
 const val SUB_DIR_USERS = "Users"
 const val SUB_DIR_COMPUTERS = "Computers"
