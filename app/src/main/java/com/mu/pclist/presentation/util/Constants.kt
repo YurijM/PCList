@@ -7,6 +7,8 @@ const val DEBUG_TAG = "pclist"
 const val YEAR_START = 2025
 const val NEW_ID = 0L
 
+const val INTERNET = "Internet"
+
 const val USERS = "Пользователи"
 const val COMPUTERS = "Компьютеры"
 

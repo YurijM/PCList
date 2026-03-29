@@ -21,6 +21,7 @@ import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
 import com.mu.pclist.presentation.util.DIR_DOCS
 import com.mu.pclist.presentation.util.FOUND_NOTHING
+import com.mu.pclist.presentation.util.INTERNET
 import com.mu.pclist.presentation.util.SUB_DIR_USERS
 import com.mu.pclist.presentation.util.USERS
 import com.mu.pclist.presentation.util.USER_LIST_IS_EMPTY
@@ -97,26 +98,20 @@ class UserListViewModel @Inject constructor(
     }
 
     private fun List<UserModel>.sortedList(sortedBy: String) = when (sortedBy) {
-        BY_SERVICE_NUMBER -> {
-            this.sortedBy { it.serviceNumber }
-        }
+        BY_SERVICE_NUMBER -> this.sortedBy { it.serviceNumber }
 
-        BY_OFFICES -> {
-            this.sortedWith(
+        BY_OFFICES -> this.sortedWith(
                 compareBy<UserModel> { it.office }
                     .thenBy { it.family }
                     .thenBy { it.name }
                     .thenBy { it.patronymic }
             )
-        }
 
-        else -> {
-            this.sortedWith(
+        else -> this.sortedWith(
                 compareBy<UserModel> { it.family }
                     .thenBy { it.name }
                     .thenBy { it.patronymic }
             )
-        }
     }
 
     private fun setUserPCList(users: MutableList<UserModel>): List<UserModel> {
@@ -206,10 +201,10 @@ class UserListViewModel @Inject constructor(
                     fileOutputStream = FileOutputStream(file, true)
 
                     fileOutputStream.write("Список сотрудиков на $date\n".toByteArray())
-                    fileOutputStream.write("($sort\n)".toByteArray())
+                    fileOutputStream.write("($sort)\n".toByteArray())
                     fileOutputStream.write("$header\n".toByteArray())
 
-                    users.forEachIndexed { index, user ->
+                    users.filter { !it.family.contains(INTERNET) }.sortedList(sortedBy).forEachIndexed { index, user ->
                         val data = when (sortedBy) {
                             BY_FAMILY -> "${index + 1};${user.family} ${user.name} ${user.patronymic};" +
                                     "${user.serviceNumber};${user.phone};${user.office};${user.pcList}\n"

@@ -65,7 +65,7 @@ class OfficeListViewModel @Inject constructor(
                     fileOutputStream = FileOutputStream(file, true)
 
                     fileOutputStream.write("Список отделов на $date\n".toByteArray())
-                    fileOutputStream.write("№;Код;Сокращенно;Отдел\n".toByteArray())
+                    fileOutputStream.write("№ п/п;Код;Сокращенно;Отдел\n".toByteArray())
 
                     offices.forEachIndexed { index, office ->
                         val data = "${index + 1};${office.code};${office.shortName};${office.office}\n"
