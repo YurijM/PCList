@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -38,11 +43,13 @@ fun UserScreen(
 ) {
     LaunchedEffect(key1 = viewModel.saved) {
         if (viewModel.saved) {
-            toUserList(Destinations.UserListDestination(
-                viewModel.user.id,
-                viewModel.sortedBy,
-                viewModel.search
-            ))
+            toUserList(
+                Destinations.UserListDestination(
+                    viewModel.user.id,
+                    viewModel.sortedBy,
+                    viewModel.search
+                )
+            )
         }
     }
     Surface(
@@ -75,67 +82,122 @@ fun UserScreen(
                         title = stringResource(R.string.user),
                         padding = PaddingValues(top = 4.dp)
                     )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth()
+                            .padding(
+                                top = 8.dp
+                            )
+                            .toggleable(
+                                value = viewModel.isInternet,
+                                onValueChange = {
+                                    viewModel.onEvent(UserEvent.OnUserIsInternet)
+                                },
+                                role = Role.Checkbox
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Checkbox(
+                            checked = viewModel.isInternet,
+                            onCheckedChange = null
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 4.dp),
+                            text = "для Internet ПК",
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                     HorizontalDivider(
                         thickness = 1.dp,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    OutlinedTextEdit(
-                        label = stringResource(R.string.family),
-                        value = viewModel.user.family,
-                        height = 40.dp,
-                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserFamilyChange(value)) },
-                        error = viewModel.familyError,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    )
-                    OutlinedTextEdit(
-                        label = stringResource(R.string.name),
-                        value = viewModel.user.name,
-                        height = 40.dp,
-                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserNameChange(value)) },
-                        error = viewModel.nameError,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    )
-                    OutlinedTextEdit(
-                        label = stringResource(R.string.patronymic),
-                        value = viewModel.user.patronymic,
-                        height = 40.dp,
-                        onChange = { value -> viewModel.onEvent(UserEvent.OnUserPatronymicChange(value)) },
-                        error = viewModel.patronymicError,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    )
-                    Row {
+                    if (!viewModel.isInternet) {
                         OutlinedTextEdit(
-                            label = stringResource(R.string.service_number),
-                            value = viewModel.user.serviceNumber,
+                            label = stringResource(R.string.family),
+                            value = viewModel.user.family,
                             height = 40.dp,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                            ),
-                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
-                            error = viewModel.serviceNumberError,
+                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserFamilyChange(value)) },
+                            error = viewModel.familyError,
                             modifier = Modifier
-                                .weight(1f)
+                                .fillMaxWidth()
                                 .padding(8.dp)
                         )
                         OutlinedTextEdit(
-                            label = stringResource(R.string.phone),
-                            value = viewModel.user.phone,
+                            label = stringResource(R.string.name),
+                            value = viewModel.user.name,
                             height = 40.dp,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                            ),
-                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserPhoneChange(value)) },
-                            error = viewModel.phoneError,
+                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserNameChange(value)) },
+                            error = viewModel.nameError,
                             modifier = Modifier
-                                .weight(1f)
+                                .fillMaxWidth()
                                 .padding(8.dp)
                         )
+                        OutlinedTextEdit(
+                            label = stringResource(R.string.patronymic),
+                            value = viewModel.user.patronymic,
+                            height = 40.dp,
+                            onChange = { value -> viewModel.onEvent(UserEvent.OnUserPatronymicChange(value)) },
+                            error = viewModel.patronymicError,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                        Row {
+                            OutlinedTextEdit(
+                                label = stringResource(R.string.service_number),
+                                value = viewModel.user.serviceNumber,
+                                height = 40.dp,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                                onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
+                                error = viewModel.serviceNumberError,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                            )
+                            OutlinedTextEdit(
+                                label = stringResource(R.string.phone),
+                                value = viewModel.user.phone,
+                                height = 40.dp,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                                onChange = { value -> viewModel.onEvent(UserEvent.OnUserPhoneChange(value)) },
+                                error = viewModel.phoneError,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                            )
+                        }
+                    } else {
+                        Row {
+                            OutlinedTextEdit(
+                                label = stringResource(R.string.ip_address),
+                                value = viewModel.user.serviceNumber,
+                                height = 40.dp,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                                onChange = { value -> viewModel.onEvent(UserEvent.OnUserServiceNumberChange(value)) },
+                                error = viewModel.serviceNumberError,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                            )
+                            OutlinedTextEdit(
+                                label = stringResource(R.string.cabinet),
+                                value = viewModel.user.name,
+                                height = 40.dp,
+                                onChange = { value -> viewModel.onEvent(UserEvent.OnUserNameChange(value)) },
+                                error = viewModel.nameError,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                            )
+                        }
                     }
                     DropDownList(
                         list = viewModel.officeList,
@@ -154,11 +216,13 @@ fun UserScreen(
                             viewModel.onEvent(UserEvent.OnUserSave)
                         },
                         onCancel = {
-                            toUserList(Destinations.UserListDestination(
-                                viewModel.user.id,
-                                viewModel.sortedBy,
-                                viewModel.search
-                            ))
+                            toUserList(
+                                Destinations.UserListDestination(
+                                    viewModel.user.id,
+                                    viewModel.sortedBy,
+                                    viewModel.search
+                                )
+                            )
                         },
                     )
                 }

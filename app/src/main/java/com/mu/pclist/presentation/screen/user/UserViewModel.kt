@@ -15,8 +15,10 @@ import com.mu.pclist.domain.repository.OfficeRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.UserDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
+import com.mu.pclist.presentation.util.INTERNET
 import com.mu.pclist.presentation.util.NEW_ID
 import com.mu.pclist.presentation.util.checkIsFieldEmpty
+import com.mu.pclist.presentation.util.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,6 +37,7 @@ class UserViewModel @Inject constructor(
         private set
     var office by mutableStateOf(OfficeModel())
         private set
+    var isInternet by mutableStateOf(false)
 
     var saved by mutableStateOf(false)
     var sortedBy = BY_FAMILY
@@ -71,13 +74,14 @@ class UserViewModel @Inject constructor(
                     newUser = false
                     userRepository.user(id).collect { item ->
                         user = item
-                        enabled = checkValue()
+                        isInternet = user.family == INTERNET
+                        enabled = checkValue(isInternet)
 
                         office = offices.find { it.id.toInt() == user.officeId } ?: OfficeModel()
                         //pc = computers.find { it.id.toInt() == user.pcId } ?: PCModel()
                     }
                 } else {
-                    enabled = checkValue()
+                    enabled = checkValue(isInternet)
                 }
             }
         }
@@ -85,34 +89,39 @@ class UserViewModel @Inject constructor(
 
     fun onEvent(event: UserEvent) {
         when (event) {
+            is UserEvent.OnUserIsInternet -> {
+                isInternet = !isInternet
+                toLog("isInternet: $isInternet")
+            }
+
             is UserEvent.OnUserFamilyChange -> {
                 user = user.copy(family = event.family)
                 familyError = checkIsFieldEmpty(event.family.trim())
-                enabled = checkValue()
+                enabled = checkValue(isInternet)
             }
 
             is UserEvent.OnUserNameChange -> {
                 user = user.copy(name = event.name)
                 nameError = checkIsFieldEmpty(event.name.trim())
-                enabled = checkValue()
+                enabled = checkValue(isInternet)
             }
 
             is UserEvent.OnUserPatronymicChange -> {
                 user = user.copy(patronymic = event.patronymic)
                 patronymicError = checkIsFieldEmpty(event.patronymic.trim())
-                enabled = checkValue()
+                enabled = checkValue(isInternet)
             }
 
             is UserEvent.OnUserServiceNumberChange -> {
                 user = user.copy(serviceNumber = event.serviceNumber)
                 serviceNumberError = checkIsFieldEmpty(event.serviceNumber.trim())
-                enabled = checkValue()
+                enabled = checkValue(isInternet)
             }
 
             is UserEvent.OnUserPhoneChange -> {
                 user = user.copy(phone = event.phone)
                 phoneError = checkIsFieldEmpty(event.phone.trim())
-                enabled = checkValue()
+                enabled = checkValue(isInternet)
             }
 
             is UserEvent.OnUserOfficeChange -> {
@@ -152,10 +161,15 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun checkValue(): Boolean =
-        user.family.isNotBlank()
-                && user.name.isNotBlank()
-                && user.patronymic.isNotBlank()
-                && user.serviceNumber.isNotBlank()
-                && user.phone.isNotBlank()
+    private fun checkValue(isInternet: Boolean): Boolean =
+        if (isInternet) {
+            user.name.isNotBlank()
+                    && user.serviceNumber.isNotBlank()
+        } else {
+            user.family.isNotBlank()
+                    && user.name.isNotBlank()
+                    && user.patronymic.isNotBlank()
+                    && user.serviceNumber.isNotBlank()
+                    && user.phone.isNotBlank()
+        }
 }
