@@ -1,5 +1,7 @@
 package com.mu.pclist.presentation.screen.pc.list
 
+import android.os.Environment
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,12 +17,20 @@ import com.mu.pclist.presentation.navigation.Destinations.PCListDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.BY_OFFICES
+import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
 import com.mu.pclist.presentation.util.COMPUTERS
+import com.mu.pclist.presentation.util.DIR_DOCS
 import com.mu.pclist.presentation.util.FOUND_NOTHING
+import com.mu.pclist.presentation.util.INTERNET
 import com.mu.pclist.presentation.util.PC_LIST_IS_EMPTY
+import com.mu.pclist.presentation.util.SUB_DIR_COMPUTERS
+import com.mu.pclist.presentation.util.createExtFile
+import com.mu.pclist.presentation.util.currentDateToString
 import com.mu.pclist.presentation.util.setTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,6 +73,10 @@ class PCListViewModel @Inject constructor(
                     .thenBy { it.name }
                     .thenBy { it.patronymic }
             )
+        }
+
+        BY_SERVICE_NUMBER -> {
+            this.sortedBy { it.serviceNumber }
         }
 
         BY_OFFICES -> {
@@ -127,6 +141,100 @@ class PCListViewModel @Inject constructor(
                     )
 
                     title = setTitle(COMPUTERS, foundComputers.size, computers.size)
+                }
+            }
+
+            is PCListEvent.OnPCListDocCreate -> {
+                var writeResult = ""
+                val filename = "computers.txt"
+                val date = currentDateToString()
+                var sort = "сортировка по "
+                var sortedByInternet = sortedBy
+                var header = ""
+                var headerInternet = ""
+                when (sortedBy) {
+                    BY_INVENTORY_NUMBER -> {
+                        sort = "по инвентарному номеру"
+                        header = "№ п/п;Инв. №;ФИО;Таб. №;Отдел;Телефон"
+                        headerInternet = "№ п/п;Инв. №;IP-адрес;Кабинет;Отдел;Телефон"
+                    }
+
+                    BY_FAMILY -> {
+                        sort = "по фамилии"
+                        sortedByInternet = BY_SERVICE_NUMBER
+                        header = "№ п/п;Инв. №;ФИО;Таб. №;Отдел;Телефон"
+                        headerInternet = "№ п/п;Инв. №;IP-адрес;Кабинет;Отдел;Телефон"
+                    }
+
+                    BY_OFFICES -> {
+                        sort = "по отделам"
+                        header = "№ п/п;Инв. №;Отдел;ФИО;Таб. №;Телефон"
+                        headerInternet = "№ п/п;Инв. №;IP-адрес;Отдел;Кабинет;Телефон"
+                    }
+                }
+
+                val file = createExtFile(filename, SUB_DIR_COMPUTERS)
+
+                val fullPath = "${Environment.DIRECTORY_DOWNLOADS}/ $DIR_DOCS/ $SUB_DIR_COMPUTERS/ $filename"
+
+                var fileOutputStream: FileOutputStream? = null
+                try {
+                    fileOutputStream = FileOutputStream(file, true)
+
+                    fileOutputStream.write("Список компьютеров на $date\n".toByteArray())
+                    fileOutputStream.write("($sort)\n".toByteArray())
+                    fileOutputStream.write("$header\n".toByteArray())
+
+                    computers.filter { !it.family.contains(INTERNET) }.sortedList(sortedBy).forEachIndexed { index, computer ->
+                        val data = when (sortedBy) {
+                            BY_INVENTORY_NUMBER -> "${index + 1};${computer.inventoryNumber};" +
+                                    "${computer.family} ${computer.name} ${computer.patronymic};" +
+                                    "${computer.serviceNumber};${computer.phone};${computer.office}\n"
+
+                            BY_FAMILY -> "${index + 1};${computer.inventoryNumber};" +
+                                    "${computer.family} ${computer.name} ${computer.patronymic};" +
+                                    "${computer.serviceNumber};${computer.phone};${computer.office}\n"
+
+                            BY_OFFICES -> "${index + 1};${computer.inventoryNumber};${computer.office};" +
+                                    "${computer.family} ${computer.name} ${computer.patronymic};" +
+                                    "${computer.serviceNumber};${computer.phone}\n"
+
+                            else -> ""
+                        }
+                        fileOutputStream.write(data.toByteArray())
+                    }
+                    val computersInternet = computers.filter { it.family.contains(INTERNET) }.sortedList(sortedByInternet)
+                    if (computersInternet.isNotEmpty()) {
+                        fileOutputStream.write("Список компьютеров под Internet\n".toByteArray())
+                        fileOutputStream.write("$headerInternet\n".toByteArray())
+
+                        computersInternet.forEachIndexed { index, computer ->
+                            val data = when (sortedBy) {
+                                BY_OFFICES -> "${index + 1};${computer.inventoryNumber};${computer.serviceNumber};" +
+                                        "${computer.office};${computer.name} ${computer.patronymic};${computer.phone}\n"
+
+                                else -> "${index + 1};${computer.inventoryNumber};${computer.serviceNumber};" +
+                                        "${computer.name} ${computer.patronymic};${computer.office};${computer.phone}\n"
+                            }
+                            fileOutputStream.write(data.toByteArray())
+                        }
+                    }
+                    writeResult = "Создан файл $fullPath"
+                } catch (e: Exception) {
+                    //e.printStackTrace()
+                    writeResult = "Ошибка ${e.message}"
+                } finally {
+                    if (fileOutputStream != null) {
+                        try {
+                            fileOutputStream.close()
+                        } catch (e: IOException) {
+                            //e.printStackTrace()
+                            writeResult = "Ошибка ${e.message}"
+                        }
+                    }
+                    if (writeResult.isNotBlank()) {
+                        Toast.makeText(event.context, writeResult, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
