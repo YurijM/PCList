@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.mu.pclist.R
 import com.mu.pclist.domain.model.PCModel
 import com.mu.pclist.presentation.component.DialogText
+import com.mu.pclist.presentation.util.INTERNET
 
 @Composable
 fun PCListItemScreen(
@@ -91,12 +92,19 @@ fun PCListItemScreen(
                         fontStyle = FontStyle.Italic,
                         lineHeight = 1.em
                     )
-                    Text(
-                        text = "таб. № ${pc.serviceNumber}, тел. ${pc.phone}",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontStyle = FontStyle.Italic,
-                        lineHeight = 1.em
-                    )
+                    if (pc.family == INTERNET) {
+                        Text(
+                            text = "IP-адесс ${pc.serviceNumber}",
+                            lineHeight = 1.em
+                        )
+                    } else {
+                        Text(
+                            text = "таб. № ${pc.serviceNumber}, тел. ${pc.phone}",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontStyle = FontStyle.Italic,
+                            lineHeight = 1.em
+                        )
+                    }
                 }
             }
             IconButton(
