@@ -110,6 +110,8 @@ class UserListViewModel @Inject constructor(
         val list = when (sortedBy) {
             BY_SERVICE_NUMBER -> this.sortedBy { it.serviceNumber }
 
+            BY_INVENTORY_NUMBER -> this.sortedBy { it.pcList }
+
             BY_OFFICES -> this.sortedWith(
                 compareBy<UserModel> { it.office }
                     .thenBy { it.family }
