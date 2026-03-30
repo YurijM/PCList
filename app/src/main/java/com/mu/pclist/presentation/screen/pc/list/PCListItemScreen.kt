@@ -92,19 +92,16 @@ fun PCListItemScreen(
                         fontStyle = FontStyle.Italic,
                         lineHeight = 1.em
                     )
-                    if (pc.family == INTERNET) {
-                        Text(
-                            text = "IP-адесс ${pc.serviceNumber}",
-                            lineHeight = 1.em
-                        )
-                    } else {
-                        Text(
-                            text = "таб. № ${pc.serviceNumber}, тел. ${pc.phone}",
-                            style = MaterialTheme.typography.titleSmall,
-                            fontStyle = FontStyle.Italic,
-                            lineHeight = 1.em
-                        )
-                    }
+                    Text(
+                        text = if (pc.family == INTERNET) {
+                            "IP-адрес ${pc.serviceNumber}"
+                        } else {
+                            "таб. № ${pc.serviceNumber}, тел. ${pc.phone}"
+                        },
+                        style = MaterialTheme.typography.titleSmall,
+                        fontStyle = FontStyle.Italic,
+                        lineHeight = 1.em
+                    )
                 }
             }
             IconButton(
