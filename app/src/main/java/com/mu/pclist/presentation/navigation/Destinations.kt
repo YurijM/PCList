@@ -20,13 +20,15 @@ sealed class Destinations {
     data class UserListDestination(
         val id: Long = NEW_ID,
         val sortedBy: String = BY_FAMILY,
-        val search: String = ""
+        val search: String = "",
+        val withoutInternet: Boolean = true
     ) : Destinations()
     @Serializable
     data class UserDestination(
         val id: Long,
         val sortedBy: String = BY_FAMILY,
-        val search: String = ""
+        val search: String = "",
+        val withoutInternet: Boolean = true
     ) : Destinations()
 
     @Serializable

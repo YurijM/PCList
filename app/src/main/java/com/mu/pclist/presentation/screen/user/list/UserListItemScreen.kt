@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.mu.pclist.R
 import com.mu.pclist.domain.model.UserModel
 import com.mu.pclist.presentation.component.DialogText
+import com.mu.pclist.presentation.util.INTERNET
 
 @Composable
 fun UserListItemScreen(
@@ -76,18 +77,33 @@ fun UserListItemScreen(
                     .weight(1f)
                     .padding(horizontal = 4.dp)
             ) {
-                Text(
-                    text = "${user.family} ${user.name} ${user.patronymic}",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    lineHeight = 1.em
-                )
-                Text(
-                    text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
-                    lineHeight = 1.em
-                )
+                if (user.family == INTERNET) {
+                    Text(
+                        text = "${user.family} каб. ${user.name}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 1.em
+                    )
+                    Text(
+                        text = "IP-адесс ${user.serviceNumber}",
+                        lineHeight = 1.em
+                    )
+                } else {
+                    Text(
+                        text = "${user.family} ${user.name} ${user.patronymic}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 1.em
+                    )
+                    Text(
+                        text = "таб. № ${user.serviceNumber}, тел. ${user.phone}",
+                        lineHeight = 1.em
+                    )
+                }
                 if (user.officeId > 0) {
                     Text(
                         text = user.office,

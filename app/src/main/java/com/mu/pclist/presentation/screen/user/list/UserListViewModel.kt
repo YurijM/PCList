@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.collections.find
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
@@ -40,7 +41,6 @@ class UserListViewModel @Inject constructor(
     private val pcRepository: PCRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    //var users = userRepository.userList()
     var users by mutableStateOf(emptyList<UserModel>())
     var foundUsers by mutableStateOf(emptyList<UserModel>())
     var sortedBy by mutableStateOf(BY_FAMILY)
@@ -50,28 +50,36 @@ class UserListViewModel @Inject constructor(
     var title = ""
         private set
     var position by mutableIntStateOf(0)
+    var withoutInternet by mutableStateOf(true)
+    private var currentId = 0L
 
     init {
         val args = savedStateHandle.toRoute<UserListDestination>()
+        currentId = args.id
         sortedBy = args.sortedBy
         search = args.search
+        withoutInternet = args.withoutInternet
 
         viewModelScope.launch {
             pcRepository.pcList().collect { pcList ->
                 computers = pcList.sortedBy { it.userId }
-            }
-        }
-        viewModelScope.launch {
-            userRepository.userList().collect { list ->
-                users = list.sortedList(sortedBy)
-                users = setUserPCList(users.toMutableList())
 
-                foundUsers = searchResult(sortedBy, search)
-                title = setTitle(USERS, foundUsers.size, users.size)
+                userRepository.userList().collect { list ->
+                    users = list.sortedList(sortedBy)
+                    users = setUserPCList(users.toMutableList())
 
-                val idx = users.indexOf(users.find { it.id == args.id })
-                if (idx > 0) {
-                    position = idx
+                    foundUsers = searchResult(sortedBy, search)
+
+                    if (withoutInternet)
+                        foundUsers = foundUsers.filter { it.family != INTERNET }
+
+                    title = setTitle(USERS, foundUsers.size, users.size)
+
+                    //val idx = users.indexOf(users.find { it.id == args.id })
+                    val idx = foundUsers.indexOf(users.find { it.id == args.id })
+                    if (idx > 0) {
+                        position = idx
+                    }
                 }
             }
         }
@@ -97,21 +105,30 @@ class UserListViewModel @Inject constructor(
         }
     }
 
-    private fun List<UserModel>.sortedList(sortedBy: String) = when (sortedBy) {
-        BY_SERVICE_NUMBER -> this.sortedBy { it.serviceNumber }
+    private fun List<UserModel>.sortedList(sortedBy: String): List<UserModel> {
+        val list = when (sortedBy) {
+            BY_SERVICE_NUMBER -> this.sortedBy { it.serviceNumber }
 
-        BY_OFFICES -> this.sortedWith(
+            BY_OFFICES -> this.sortedWith(
                 compareBy<UserModel> { it.office }
                     .thenBy { it.family }
                     .thenBy { it.name }
                     .thenBy { it.patronymic }
             )
 
-        else -> this.sortedWith(
+            else -> this.sortedWith(
                 compareBy<UserModel> { it.family }
                     .thenBy { it.name }
                     .thenBy { it.patronymic }
             )
+        }
+
+        val idx = list.indexOf(list.find { it.id == currentId })
+        if (idx > 0) {
+            position = idx
+        }
+
+        return list
     }
 
     private fun setUserPCList(users: MutableList<UserModel>): List<UserModel> {
@@ -133,6 +150,8 @@ class UserListViewModel @Inject constructor(
             is UserListEvent.OnUserListSortByChange -> {
                 search = ""
                 foundUsers = users
+                if (withoutInternet)
+                    foundUsers = foundUsers.filter { it.family != INTERNET }
                 title = setTitle(USERS, foundUsers.size, users.size)
 
                 sortedBy = event.sortBy
@@ -143,6 +162,8 @@ class UserListViewModel @Inject constructor(
                 search = event.search
                 if (search.isBlank()) {
                     foundUsers = setUserPCList(users.toMutableList())
+                    if (withoutInternet)
+                        foundUsers = foundUsers.filter { it.family != INTERNET }
                     searchResult = USER_LIST_IS_EMPTY
                 } else {
                     searchResult = FOUND_NOTHING
@@ -238,6 +259,20 @@ class UserListViewModel @Inject constructor(
                         Toast.makeText(event.context, writeResult, Toast.LENGTH_LONG).show()
                     }
                 }
+            }
+
+            is UserListEvent.OnUserListWithoutInternet -> {
+                withoutInternet = !withoutInternet
+
+                foundUsers = if (withoutInternet)
+                    users.filter { it.family != INTERNET }
+                else
+                    users
+
+                val idx = foundUsers.indexOf(users.find { it.id == currentId })
+                position = if (idx > 0) idx else 0
+
+                title = setTitle(USERS, foundUsers.size, users.size)
             }
         }
     }

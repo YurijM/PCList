@@ -47,7 +47,8 @@ fun UserScreen(
                 Destinations.UserListDestination(
                     viewModel.user.id,
                     viewModel.sortedBy,
-                    viewModel.search
+                    viewModel.search,
+                    viewModel.withoutInternet
                 )
             )
         }
@@ -220,7 +221,8 @@ fun UserScreen(
                                 Destinations.UserListDestination(
                                     viewModel.user.id,
                                     viewModel.sortedBy,
-                                    viewModel.search
+                                    viewModel.search,
+                                    viewModel.withoutInternet
                                 )
                             )
                         },

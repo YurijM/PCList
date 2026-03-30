@@ -6,7 +6,7 @@ import com.mu.pclist.presentation.util.BY_FAMILY
 import com.mu.pclist.presentation.util.NEW_ID
 
 fun NavController.navigationToUserList(args: UserListDestination) {
-    navigate(UserListDestination(args.id, args.sortedBy, args.search)) {
-        popUpTo(UserListDestination(NEW_ID, BY_FAMILY, ""))
+    navigate(UserListDestination(args.id, args.sortedBy, args.search, args.withoutInternet)) {
+        popUpTo(UserListDestination(NEW_ID, BY_FAMILY, "", true))
     }
 }

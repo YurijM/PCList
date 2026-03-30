@@ -42,6 +42,7 @@ class UserViewModel @Inject constructor(
     var saved by mutableStateOf(false)
     var sortedBy = BY_FAMILY
     var search = ""
+    var withoutInternet = true
 
     var familyError = ""
         private set
@@ -61,6 +62,7 @@ class UserViewModel @Inject constructor(
         id = args.id
         sortedBy = args.sortedBy
         search = args.search
+        withoutInternet = args.withoutInternet
 
         viewModelScope.launch {
             officeList.add("")
@@ -140,13 +142,23 @@ class UserViewModel @Inject constructor(
                 if (user.officeId == 0)
                     user = user.copy(officeId = null)
 
-                user = user.copy(
-                    family = user.family.trim(),
-                    name = user.name.trim(),
-                    patronymic = user.patronymic.trim(),
-                    serviceNumber = user.serviceNumber.trim(),
-                    phone = user.phone.trim(),
-                )
+                if (isInternet) {
+                    user = user.copy(
+                        family = INTERNET,
+                        name = user.name.trim(),
+                        serviceNumber = user.serviceNumber.trim(),
+                        patronymic = "",
+                        phone = "",
+                    )
+                } else {
+                    user = user.copy(
+                        family = user.family.trim(),
+                        name = user.name.trim(),
+                        patronymic = user.patronymic.trim(),
+                        serviceNumber = user.serviceNumber.trim(),
+                        phone = user.phone.trim(),
+                    )
+                }
 
                 viewModelScope.launch {
                     if (newUser) {

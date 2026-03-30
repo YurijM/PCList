@@ -72,7 +72,7 @@ fun OfficeListScreen(
                     .padding(5.dp)
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth(.8f)
+                    modifier = Modifier.fillMaxWidth(.85f)
                 ) {
                     Title(
                         stringResource(R.string.offices) +

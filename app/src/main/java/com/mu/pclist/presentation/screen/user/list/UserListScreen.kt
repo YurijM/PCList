@@ -3,21 +3,25 @@ package com.mu.pclist.presentation.screen.user.list
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +35,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mu.pclist.R
@@ -78,10 +83,37 @@ fun UserListScreen(
                     .fillMaxWidth()
                     .padding(top = 5.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(.8f)
+                Column(
+                    modifier = Modifier.fillMaxWidth(.85f)
                 ) {
-                    Title(viewModel.title)
+                    Title(
+                        viewModel.title,
+                        padding = PaddingValues(top = 4.dp)
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth()
+                            .toggleable(
+                                value = viewModel.withoutInternet,
+                                onValueChange = {
+                                    viewModel.onEvent(UserListEvent.OnUserListWithoutInternet)
+                                },
+                                role = Role.Checkbox
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Checkbox(
+                            checked = viewModel.withoutInternet,
+                            onCheckedChange = null
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 4.dp),
+                            text = "без Internet ПК",
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                 }
                 Image(
                     painter = painterResource(id = R.drawable.ic_save),
@@ -134,7 +166,7 @@ fun UserListScreen(
                 items(viewModel.foundUsers) { user ->
                     UserListItemScreen(
                         user = user,
-                        onEdit = { toUser(UserDestination(user.id, viewModel.sortedBy, viewModel.search)) },
+                        onEdit = { toUser(UserDestination(user.id, viewModel.sortedBy, viewModel.search, viewModel.withoutInternet)) },
                         onDelete = { viewModel.onEvent(UserListEvent.OnUserListDelete(user)) },
                     )
                 }
