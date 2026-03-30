@@ -17,6 +17,7 @@ import com.mu.pclist.domain.repository.PCRepository
 import com.mu.pclist.domain.repository.UserRepository
 import com.mu.pclist.presentation.navigation.Destinations.UserListDestination
 import com.mu.pclist.presentation.util.BY_FAMILY
+import com.mu.pclist.presentation.util.BY_INVENTORY_NUMBER
 import com.mu.pclist.presentation.util.BY_OFFICES
 import com.mu.pclist.presentation.util.BY_SERVICE_NUMBER
 import com.mu.pclist.presentation.util.DIR_DOCS
@@ -195,21 +196,29 @@ class UserListViewModel @Inject constructor(
                 val filename = "users.txt"
                 val date = currentDateToString()
                 var sort = "сортировка по "
+                var sortedByInternet = sortedBy
                 var header = ""
+                var headerInternet = ""
                 when (sortedBy) {
                     BY_FAMILY -> {
                         sort = "по фамилии"
+                        sortedByInternet = BY_INVENTORY_NUMBER
                         header = "№ п/п;ФИО;Таб. №;Телефон;Отдел;Компьютеры"
+                        headerInternet = "№ п/п;Инв. №;IP-адрес;Кабинет;Отдел"
                     }
 
                     BY_SERVICE_NUMBER -> {
                         sort = "по табельному номеру"
+                        sortedByInternet = BY_SERVICE_NUMBER
                         header = "№ п/п;Таб. №;ФИО;Телефон;Отдел;Компьютеры"
+                        headerInternet = "№ п/п;IP-адрес;Инв. №;Кабинет;Отдел"
                     }
 
                     BY_OFFICES -> {
                         sort = "по отделам"
+                        sortedByInternet = BY_OFFICES
                         header = "№ п/п;Отдел;ФИО;Таб. №;Телефон;Компьютеры"
+                        headerInternet = "№ п/п;Отдел;Инв. №;IP-адрес;Кабинет"
                     }
                 }
 
@@ -241,6 +250,27 @@ class UserListViewModel @Inject constructor(
                             else -> ""
                         }
                         fileOutputStream.write(data.toByteArray())
+                    }
+                    val usersInternet = users.filter { it.family == INTERNET }.sortedList(sortedByInternet)
+                    if (usersInternet.isNotEmpty()) {
+                        fileOutputStream.write("Список компьютеров под Internet\n".toByteArray())
+                        fileOutputStream.write("$headerInternet\n".toByteArray())
+
+                        usersInternet.forEachIndexed { index, user ->
+                            val data = when (sortedBy) {
+                                BY_FAMILY -> "${index + 1};${user.pcList};${user.serviceNumber};" +
+                                        "${user.name};${user.office}\n"
+
+                                BY_SERVICE_NUMBER -> "${index + 1};${user.serviceNumber};${user.pcList};" +
+                                        "${user.name};${user.office}\n"
+
+                                BY_OFFICES -> "${index + 1};${user.office};${user.pcList};" +
+                                        "${user.serviceNumber};${user.name}\n"
+
+                                else -> ""
+                            }
+                            fileOutputStream.write(data.toByteArray())
+                        }
                     }
                     writeResult = "Создан файл $fullPath"
                 } catch (e: Exception) {
