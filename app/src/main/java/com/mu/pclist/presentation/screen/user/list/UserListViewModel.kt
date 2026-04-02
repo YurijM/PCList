@@ -69,10 +69,11 @@ class UserListViewModel @Inject constructor(
                     users = list.sortedList(sortedBy)
                     users = setUserPCList(users.toMutableList())
 
+                    foundUsers = users
                     foundUsers = searchResult(sortedBy, search)
 
-                    if (withoutInternet)
-                        foundUsers = foundUsers.filter { it.family != INTERNET }
+                    /*if (withoutInternet)
+                        foundUsers = foundUsers.filter { it.family != INTERNET }*/
 
                     title = setTitle(USERS, foundUsers.size, users.size)
 
@@ -87,7 +88,7 @@ class UserListViewModel @Inject constructor(
     }
 
     private fun searchResult(sortedBy: String, search: String): List<UserModel> {
-        return when (sortedBy) {
+        foundUsers = when (sortedBy) {
             BY_SERVICE_NUMBER -> {
                 users.filter { it.serviceNumber.contains(search, ignoreCase = true) }
             }
@@ -104,6 +105,8 @@ class UserListViewModel @Inject constructor(
                 }
             }
         }
+        return if (withoutInternet) foundUsers.filter { it.family != INTERNET }
+        else foundUsers
     }
 
     private fun List<UserModel>.sortedList(sortedBy: String): List<UserModel> {
