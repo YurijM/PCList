@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.collections.find
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
@@ -66,22 +65,20 @@ class UserListViewModel @Inject constructor(
                 computers = pcList.sortedBy { it.userId }
 
                 userRepository.userList().collect { list ->
-                    users = list.sortedList(sortedBy)
+                    users = list
                     users = setUserPCList(users.toMutableList())
 
                     foundUsers = users
                     foundUsers = searchResult(sortedBy, search)
-
-                    /*if (withoutInternet)
-                        foundUsers = foundUsers.filter { it.family != INTERNET }*/
+                    foundUsers = foundUsers.sortedList(sortedBy)
 
                     title = setTitle(USERS, foundUsers.size, users.size)
 
                     //val idx = users.indexOf(users.find { it.id == args.id })
-                    val idx = foundUsers.indexOf(users.find { it.id == args.id })
-                    if (idx > 0) {
+                    /*val idx = foundUsers.indexOf(users.find { it.id == args.id })
+                    if (idx >= 0) {
                         position = idx
-                    }
+                    }*/
                 }
             }
         }
@@ -105,8 +102,10 @@ class UserListViewModel @Inject constructor(
                 }
             }
         }
-        return if (withoutInternet) foundUsers.filter { it.family != INTERNET }
-        else foundUsers
+
+        if (withoutInternet) foundUsers = foundUsers.filter { it.family != INTERNET }
+
+        return foundUsers
     }
 
     private fun List<UserModel>.sortedList(sortedBy: String): List<UserModel> {
@@ -130,7 +129,7 @@ class UserListViewModel @Inject constructor(
         }
 
         val idx = list.indexOf(list.find { it.id == currentId })
-        if (idx > 0) {
+        if (idx >= 0) {
             position = idx
         }
 
@@ -299,13 +298,8 @@ class UserListViewModel @Inject constructor(
             is UserListEvent.OnUserListWithoutInternet -> {
                 withoutInternet = !withoutInternet
 
-                foundUsers = if (withoutInternet)
-                    users.filter { it.family != INTERNET }
-                else
-                    users
-
-                val idx = foundUsers.indexOf(users.find { it.id == currentId })
-                position = if (idx > 0) idx else 0
+                searchResult(sortedBy, search)
+                foundUsers = foundUsers.sortedList(sortedBy)
 
                 title = setTitle(USERS, foundUsers.size, users.size)
             }
